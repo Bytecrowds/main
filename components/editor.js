@@ -1,50 +1,42 @@
-import { useMutation, useGet } from "figbird";
-import { useEffect } from "react";
-import io from 'socket.io-client';
-import feathers from '@feathersjs/client';
-import { Provider } from "figbird";
+import { useEffect, useRef } from 'react';
+import { useCodeMirror } from '@uiw/react-codemirror';
+import { javascript } from '@codemirror/lang-javascript';
 
-const socket = io("http://localhost:3030");
-const client = feathers();
+import { yCollab, yUndoManagerKeymap } from 'y-codemirror.next'
+import { basicSetup } from '@codemirror/basic-setup'
+import { keymap } from '@codemirror/view'
 
-client.configure(feathers.socketio(socket));
-console.log("ws connection estabilished")
+import store from "../realtime/store";
+import { webSocketProvider } from '../realtime/store';
 
 const Editor = () => {
-    return (
-        <Provider feathers={client}>
-            <EditorArea />
-        </Provider >
-    )
-}
+    const editor = useRef();
 
-const EditorArea = (bitecrowdId) => {
-    console.log("editor launched");
+    // class SyncedText(yText)
+    let ytext = store.bitecrowd
 
-    const { status, data, error } = useGet("bitecrowds", { query: { id: bitecrowdId } });
-    const { patch, create } = useMutation("bitecrowds");
-
-    if (status == "loading")
-        return <div>loading...</div>
-
-    else if (status == "error") {
-        console.log(error);
-        return <div>error</div>
-    }
+    // const state = EditorState.create(props)
+    const { setContainer } = useCodeMirror({
+        value: ytext.toString(),
+        container: editor.current,
+        extensions: [
+            keymap.of([
+                ...yUndoManagerKeymap
+            ]),
+            basicSetup,
+            javascript(),
+            yCollab(ytext, webSocketProvider.awareness)
+        ]
+    });
 
     useEffect(() => {
-        if (!data.text)
-            create({
-                id: bitecrowdId,
-                text: "welcome to bitecrowds"
-            })
-    }, [])
+        if (editor.current) {
+            setContainer(editor.current);
+        }
+    }, [editor.current]);
 
-    return (
-        <Provider feathers={client}>
-            <input type="text" onChange={(e) => patch(bitecrowdId, { text: e.target.value })} />
-        </Provider>
-    )
-}
+
+    return <div ref={editor} />;
+};
 
 export default Editor;
