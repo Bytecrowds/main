@@ -7,10 +7,11 @@ import { basicSetup } from '@codemirror/basic-setup'
 import { keymap } from '@codemirror/view'
 
 import store from "../realtime/store";
-import { webSocketProvider } from '../realtime/store';
+import { getWebSocketProvider } from '../realtime/store';
 
-const Editor = () => {
+const Editor = ({ id }) => {
     const editor = useRef();
+    const webSocketProvider = getWebSocketProvider(id);
 
     // class SyncedText(yText)
     let ytext = store.bitecrowd
