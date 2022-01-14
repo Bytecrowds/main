@@ -9,7 +9,6 @@ export default store;
 const doc = getYjsValue(store);
 
 export const getWebSocketProvider = (id) => {
-    console.log(doc);
     const webSocketProvider = new WebsocketProvider(
         "ws://localhost:1234",
         id,
