@@ -13,6 +13,11 @@ import { wast } from '@codemirror/lang-wast';
 import { php } from '@codemirror/lang-php';
 import { lezer } from '@codemirror/lang-lezer';
 import { python } from '@codemirror/lang-python';
+import pMinDelay from 'p-min-delay'
+
+import dynamic from 'next/dynamic';
+const Select = dynamic(() => pMinDelay(import("./select"), 1000));
+
 
 import { yCollab, yUndoManagerKeymap } from 'y-codemirror.next'
 import { basicSetup } from '@codemirror/basic-setup'
@@ -23,7 +28,8 @@ import { getWebSocketProvider } from '../realtime/store';
 
 const Editor = ({ id }) => {
     const editor = useRef();
-    const [editorLanguege, setEditorLanguege] = useState(javascript());
+    const [editorLanguage, setEditorLanguage] = useState(javascript());
+    const [defaultLanguage, setDefaultLanguage] = useState("");
     const webSocketProvider = getWebSocketProvider(id);
     let ytext = store.bytecrowdText;
 
@@ -35,7 +41,7 @@ const Editor = ({ id }) => {
                 ...yUndoManagerKeymap
             ]),
             basicSetup,
-            editorLanguege,
+            editorLanguage,
             yCollab(ytext, webSocketProvider.awareness)
         ]
     });
@@ -56,8 +62,12 @@ const Editor = ({ id }) => {
         window.python = python;
 
         async function fetchBytecrowd() {
-            let response = await fetch("http://127.0.0.1:5000/get/" + id);
-            ytext = await response.text();
+            let text = await fetch("http://127.0.0.1:5000/get/" + id);
+            ytext = await text.text();
+            //let language = await fetch("http://127.0.0.1:5000/getLanguage/" + id);
+            //setEditorLanguage(language.text());
+            setDefaultLanguage("html()");
+            setEditorLanguage(html());
         }
 
         fetchBytecrowd()
@@ -74,35 +84,7 @@ const Editor = ({ id }) => {
     return (
         <>
             <div ref={editor} />
-            <div style={{
-                position: "fixed",
-                bottom: 0,
-                backgroundColor: "#9ecfff",
-                width: "100%",
-                height: "3%",
-                marginBottom: 0,
-                paddingBottom: 0,
-            }}>
-                <label htmlFor="languages">Language:</label>
-                <select
-                    name="languages"
-                    onChange={e => { setEditorLanguege(Function('return ' + e.target.value.toString())) }
-                    }
-                >
-                    <option value="javascript()">Javascript</option>
-                    <option value="cpp()">C++</option>
-                    <option value="html()">HTML</option>
-                    <option value="css()">CSS</option>
-                    <option value="json()">JSON</option>
-                    <option value="markdown()">Markdown</option>
-                    <option value="rust()">Rudt</option>
-                    <option value="xml()">XML</option>
-                    <option value="java()">Java</option>
-                    <option value="wast()">Wast</option>
-                    <option value="lezer()">Lezer</option>
-                    <option value="python()">Python</option>
-                </select>
-            </div>
+            <Select defaultLanguage={defaultLanguage} setEditorLanguage={setEditorLanguage}></Select>
         </>)
 
 };
