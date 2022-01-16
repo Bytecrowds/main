@@ -5,7 +5,7 @@ import { useRouter } from "next/router";
 
 
 export default function Home() {
-  
+
   const [fileHistory, setFileHistory] = useState([]);
   const [battlegrounds, setBattlegrounds] = useState(["politicalMonster", "poetry", "meetup"]);
 
@@ -13,14 +13,13 @@ export default function Home() {
 
   useEffect(() => {
     let fileHistoryLocal = JSON.parse(localStorage.getItem("fileHistory") || "[]");
-    if(fileHistoryLocal.length) {
-      console.log("setting", fileHistoryLocal)
+    if (fileHistoryLocal.length) {
       setFileHistory(fileHistoryLocal);
     }
 
     setRandomLink("/bitecrowds/" + Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 7));
   }, [])
-  
+
 
   return (
     <>
@@ -34,37 +33,37 @@ export default function Home() {
           <a href="#" className="logo">Bitecrowds</a>
           <a href={randomLink} className="button">Share a snippet</a>
           <a href="#" className="button">Contact us</a>
-      </header>
-      <div className="row">
-        <div className="col-sm"></div>
-        <div className="col-sm-10">
-          <h1>Bitecrowds<small>Code-sharing fast and easy</small></h1>
+        </header>
+        <div className="row">
+          <div className="col-sm"></div>
+          <div className="col-sm-10">
+            <h1>Bitecrowds<small>Code-sharing fast and easy</small></h1>
+          </div>
+          <div className="col-sm"></div>
         </div>
-        <div className="col-sm"></div>
-      </div>
-      <div className="row">
-        <div className="col-sm"></div>
-        <div className="col-sm-10">
-          <p>Share <kbd>code</kbd> with your <code>friends</code>, and<code>colleagues</code> faster than ever before.</p>
-          <pre>{`function equals(P, NP){
+        <div className="row">
+          <div className="col-sm"></div>
+          <div className="col-sm-10">
+            <p>Share <kbd>code</kbd> with your <code>friends</code>, and<code>colleagues</code> faster than ever before.</p>
+            <pre>{`function equals(P, NP){
   return Math.random(0, 1);
 }`}</pre>
+          </div>
+          <div className="col-sm"></div>
         </div>
-        <div className="col-sm"></div>
-      </div>
-      <div className="row">
-        <div className="col-sm"></div>
-        <div id="shareasnip" className="col-sm-10">
-          <a href={randomLink} className="button secondary">
-            Share a snippet now!
-          </a>
+        <div className="row">
+          <div className="col-sm"></div>
+          <div id="shareasnip" className="col-sm-10">
+            <a href={randomLink} className="button secondary">
+              Share a snippet now!
+            </a>
+          </div>
+          <div className="col-sm"></div>
         </div>
-        <div className="col-sm"></div>
-      </div>
-      <div className="row">
-        <div className="col-sm">
-        </div>
-        {/* <div className="col-sm-10"> */}
+        <div className="row">
+          <div className="col-sm">
+          </div>
+          {/* <div className="col-sm-10"> */}
           <div className="card">
             <h4>Live code sharing <small>Live code editor that is focused on speed.</small></h4>
           </div>
@@ -77,56 +76,56 @@ export default function Home() {
           <div className="card">
             <h4>Minimal memory consuption<small>Small memory footprint.</small></h4>
           </div>
-        {/* </div> */}
-        <div className="col-sm"></div>
-      </div>
-      <div className="row">
-        <div className="col-sm"></div>
-        <div className="col-sm-10">
-          <h2>File history<small>Files you accessed before</small></h2>
+          {/* </div> */}
+          <div className="col-sm"></div>
         </div>
-        <div className="col-sm"></div>
-      </div>
-        
-      <div className="row">
-        <div className="col-sm"></div>
+        <div className="row">
+          <div className="col-sm"></div>
           <div className="col-sm-10">
-            {fileHistory.length > 0 && 
+            <h2>File history<small>Files you accessed before</small></h2>
+          </div>
+          <div className="col-sm"></div>
+        </div>
+
+        <div className="row">
+          <div className="col-sm"></div>
+          <div className="col-sm-10">
+            {fileHistory.length > 0 &&
               <nav>
                 {fileHistory.map((el, idx) => {
-                  return (<a key={idx} href={"/bitecrowds/" + el}>{ idx + 1 + ". " + el}</a>)
+                  return (<a key={idx} href={"/bitecrowds/" + el}>{idx + 1 + ". " + el}</a>)
                 })}
               </nav>
             }
             {fileHistory.length === 0 && <p>No file history.</p>}
           </div>
           <div className="col-sm"></div>
-      </div>
-      <div className="row">
-        <div className="col-sm"></div>
-        <div className="col-sm-10">
-          <h2>Public battlegrounds<small>Files where you can fight for what matters.</small></h2>
         </div>
-        <div className="col-sm"></div>
-      </div>
-      <div className="row">
-        <div className="col-sm"></div>
+        <div className="row">
+          <div className="col-sm"></div>
           <div className="col-sm-10">
-            {battlegrounds.length > 0 && 
+            <h2>Public battlegrounds<small>Files where you can fight for what matters.</small></h2>
+          </div>
+          <div className="col-sm"></div>
+        </div>
+        <div className="row">
+          <div className="col-sm"></div>
+          <div className="col-sm-10">
+            {battlegrounds.length > 0 &&
               <nav>
                 {battlegrounds.map((el, idx) => {
-                  return (<a key={idx} href={"/bitecrowds/" + el}>{ idx + 1 + ". " + el}</a>)
+                  return (<a key={idx} href={"/bitecrowds/" + el}>{idx + 1 + ". " + el}</a>)
                 })}
               </nav>
             }
             {battlegrounds.length === 0 && <p>No battlegrounds available today.</p>}
           </div>
           <div className="col-sm"></div>
-      </div>
-      <footer className="stiky">
-        <p>Website created by <a href="">Tudor Zgimbau</a> and <a href="https://www.linkedin.com/in/mihai-cosmin-ivanov-4136a9195">Ivanov Mihai Cosmin.</a></p>
-        <p>Contact us</p>
-      </footer>
+        </div>
+        <footer className="stiky">
+          <p>Website created by <a href="">Tudor Zgimbau</a> and <a href="https://www.linkedin.com/in/mihai-cosmin-ivanov-4136a9195">Ivanov Mihai Cosmin.</a></p>
+          <p>Contact us</p>
+        </footer>
       </div>
     </>
   )

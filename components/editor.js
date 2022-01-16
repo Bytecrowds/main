@@ -25,11 +25,8 @@ const Editor = ({ id }) => {
     const editor = useRef();
     const [editorLanguege, setEditorLanguege] = useState(javascript());
     const webSocketProvider = getWebSocketProvider(id);
+    let ytext = store.bitecrowdText
 
-    // class SyncedText(yText)
-    let ytext = store.bitecrowd
-
-    // const state = EditorState.create(props)
     const { setContainer } = useCodeMirror({
         value: ytext.toString(),
         container: editor.current,
