@@ -1,15 +1,13 @@
 import Head from "next/head"
 import { useState } from "react"
 import { useEffect } from "react";
-import { useRouter } from "next/router";
-
 
 export default function Home() {
 
   const [fileHistory, setFileHistory] = useState([]);
   const [battlegrounds, setBattlegrounds] = useState(["politicalMonster", "poetry", "meetup"]);
 
-  const [randomLink, setRandomLink] = useState("/bitecrowds/snippetzone");
+  const [randomLink, setRandomLink] = useState("/bytecrowds/snippetzone");
 
   useEffect(() => {
     let fileHistoryLocal = JSON.parse(localStorage.getItem("fileHistory") || "[]");
@@ -17,27 +15,27 @@ export default function Home() {
       setFileHistory(fileHistoryLocal);
     }
 
-    setRandomLink("/bitecrowds/" + Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 7));
+    setRandomLink("/bytecrowds/" + Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 7));
   }, [])
 
 
   return (
     <>
       <Head>
-        <title>Bitecrowds - Landing</title>
+        <title>Bytecrowds - Landing</title>
         <link rel="stylesheet" href="https://cdn.rawgit.com/Chalarangelo/mini.css/v3.0.1/dist/mini-default.min.css"></link>
         <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
       </Head>
       <div className="container">
         <header>
-          <a href="#" className="logo">Bitecrowds</a>
+          <a href="#" className="logo">Bytecrowds</a>
           <a href={randomLink} className="button">Share a snippet</a>
           <a href="#" className="button">Contact us</a>
         </header>
         <div className="row">
           <div className="col-sm"></div>
           <div className="col-sm-10">
-            <h1>Bitecrowds<small>Code-sharing fast and easy</small></h1>
+            <h1>Bytecrowds<small>Code-sharing fast and easy</small></h1>
           </div>
           <div className="col-sm"></div>
         </div>
@@ -93,7 +91,7 @@ export default function Home() {
             {fileHistory.length > 0 &&
               <nav>
                 {fileHistory.map((el, idx) => {
-                  return (<a key={idx} href={"/bitecrowds/" + el}>{idx + 1 + ". " + el}</a>)
+                  return (<a key={idx} href={"/bytecrowds/" + el}>{idx + 1 + ". " + el}</a>)
                 })}
               </nav>
             }
@@ -114,7 +112,7 @@ export default function Home() {
             {battlegrounds.length > 0 &&
               <nav>
                 {battlegrounds.map((el, idx) => {
-                  return (<a key={idx} href={"/bitecrowds/" + el}>{idx + 1 + ". " + el}</a>)
+                  return (<a key={idx} href={"/bytecrowds/" + el}>{idx + 1 + ". " + el}</a>)
                 })}
               </nav>
             }

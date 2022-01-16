@@ -7,30 +7,30 @@ const Editor = dynamic(() => import("../../components/editor"), {
 });
 
 
-const Bitecrowd = () => {
+const Bytecrowd = () => {
     const { id } = useRouter().query;
 
     useEffect(() => {
-        if(id !== undefined) {
+        if (id !== undefined) {
             let fileHistory = JSON.parse(localStorage.getItem("fileHistory") || "[]")
-            console.log(fileHistory.filter( 
+            console.log(fileHistory.filter(
                 (el) => {
                     return el !== id;
                 }
             ));
             localStorage.setItem("fileHistory", JSON.stringify(
-                [id].concat(fileHistory.filter( 
+                [id].concat(fileHistory.filter(
                     (el) => {
                         return el !== id;
                     }
-                )).slice(0,10)))
+                )).slice(0, 10)))
         }
     }, [id])
 
     return (
         <>
             <Head>
-                <title>Bitecrowd editor - {id}</title>
+                <title>Bytecrowd editor - {id}</title>
             </Head>
             <Editor id={id}></Editor>
         </>
@@ -38,4 +38,4 @@ const Bitecrowd = () => {
 };
 
 
-export default Bitecrowd;
+export default Bytecrowd;

@@ -25,7 +25,7 @@ const Editor = ({ id }) => {
     const editor = useRef();
     const [editorLanguege, setEditorLanguege] = useState(javascript());
     const webSocketProvider = getWebSocketProvider(id);
-    let ytext = store.bitecrowdText
+    let ytext = store.bytecrowdText;
 
     const { setContainer } = useCodeMirror({
         value: ytext.toString(),
@@ -54,6 +54,14 @@ const Editor = ({ id }) => {
         window.php = php;
         window.lezer = lezer;
         window.python = python;
+
+        async function fetchBytecrowd() {
+            let response = await fetch("http://127.0.0.1:5000/get/" + id);
+            ytext = await response.text();
+        }
+
+        fetchBytecrowd()
+
     }, [])
 
     useEffect(() => {

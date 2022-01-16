@@ -2,7 +2,7 @@ import { syncedStore, getYjsValue } from "@syncedstore/core";
 import { WebsocketProvider } from "y-websocket";
 import userColor from "../utils/color";
 
-const store = syncedStore({ bitecrowdText: "text" });
+const store = syncedStore({ bytecrowdText: "text" });
 export default store;
 
 const doc = getYjsValue(store);
