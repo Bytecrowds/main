@@ -1,13 +1,35 @@
-import dynamic from "next/dynamic";
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { useEffect } from "react/cjs/react.development";
+import dynamic from "next/dynamic";
 const Editor = dynamic(() => import("../../components/editor"), {
     ssr: false
 });
 
 
-const Bytecrowd = () => {
+export async function getServerSideProps(context) {
+    const { id } = context.query;
+    let _text1 = await fetch("http://127.0.0.1:5000/get/" + id);
+    let editorText = await _text1.text();
+
+    let _text2 = await fetch("http://127.0.0.1:5000/getLanguage/" + id);
+    let editorInitialLanguage = await _text2.text();
+
+    if (editorInitialLanguage === "") {
+        editorInitialLanguage = "javascript()";
+    }
+
+    return {
+        props: {
+            editorText,
+            editorInitialLanguage
+        }
+    }
+}
+
+
+
+const Bytecrowd = ({ editorText, editorInitialLanguage }) => {
     const { id } = useRouter().query;
 
     useEffect(() => {
@@ -32,7 +54,11 @@ const Bytecrowd = () => {
             <Head>
                 <title>Bytecrowd editor - {id}</title>
             </Head>
-            <Editor id={id}></Editor>
+            <Editor
+                id={id}
+                editorText={editorText}
+                editorInitialLanguage={editorInitialLanguage}>
+            </Editor>
         </>
     )
 };

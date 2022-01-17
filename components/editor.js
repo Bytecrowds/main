@@ -13,23 +13,17 @@ import { wast } from '@codemirror/lang-wast';
 import { php } from '@codemirror/lang-php';
 import { lezer } from '@codemirror/lang-lezer';
 import { python } from '@codemirror/lang-python';
-import pMinDelay from 'p-min-delay'
-
-import dynamic from 'next/dynamic';
-const Select = dynamic(() => pMinDelay(import("./select"), 1000));
-
 
 import { yCollab, yUndoManagerKeymap } from 'y-codemirror.next'
 import { basicSetup } from '@codemirror/basic-setup'
 import { keymap } from '@codemirror/view'
 
-import store from "../realtime/store";
+import store from '../realtime/store';
 import { getWebSocketProvider } from '../realtime/store';
 
-const Editor = ({ id }) => {
+const Editor = ({ id, editorText, editorInitialLanguage }) => {
     const editor = useRef();
     const [editorLanguage, setEditorLanguage] = useState(javascript());
-    const [defaultLanguage, setDefaultLanguage] = useState("");
     const webSocketProvider = getWebSocketProvider(id);
     let ytext = store.bytecrowdText;
 
@@ -60,18 +54,9 @@ const Editor = ({ id }) => {
         window.php = php;
         window.lezer = lezer;
         window.python = python;
-
-        async function fetchBytecrowd() {
-            let text = await fetch("http://127.0.0.1:5000/get/" + id);
-            ytext = await text.text();
-            //let language = await fetch("http://127.0.0.1:5000/getLanguage/" + id);
-            //setEditorLanguage(language.text());
-            setDefaultLanguage("html()");
-            setEditorLanguage(html());
-        }
-
-        fetchBytecrowd()
-
+        if (store.bytecrowdText.toString() != "")
+            store.bytecrowdText.insert(0, editorText);
+        setEditorLanguage(Function('return ' + editorInitialLanguage.toString())());
     }, [])
 
     useEffect(() => {
@@ -84,9 +69,50 @@ const Editor = ({ id }) => {
     return (
         <>
             <div ref={editor} />
-            <Select defaultLanguage={defaultLanguage} setEditorLanguage={setEditorLanguage}></Select>
-        </>)
-
+            <div style={{
+                position: "fixed",
+                bottom: 0,
+                backgroundColor: "#9ecfff",
+                width: "100%",
+                height: "3%",
+                marginBottom: 0,
+                paddingBottom: 0,
+            }}>
+                <label htmlFor="languages">Language:</label>
+                <select
+                    name="languages"
+                    defaultValue={editorInitialLanguage}
+                    onChange={e => {
+                        setEditorLanguage(Function('return ' + e.target.value.toString())());
+                        fetch("http://127.0.0.1:5000/updateLanguage", {
+                            method: 'POST',
+                            headers: {
+                                'Content-Type': 'text/plain'
+                            },
+                            body: JSON.stringify({
+                                bytecrowd: id,
+                                language: e.target.value.toString()
+                            })
+                        })
+                    }
+                    }
+                >
+                    <option value="javascript()">Javascript</option>
+                    <option value="cpp()">C++</option>
+                    <option value="html()">HTML</option>
+                    <option value="css()">CSS</option>
+                    <option value="json()">JSON</option>
+                    <option value="markdown()">Markdown</option>
+                    <option value="rust()">Rust</option>
+                    <option value="xml()">XML</option>
+                    <option value="java()">Java</option>
+                    <option value="wast()">Wast</option>
+                    <option value="lezer()">Lezer</option>
+                    <option value="python()">Python</option>
+                </select>
+            </div >
+        </>
+    )
 };
 
 export default Editor;
