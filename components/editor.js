@@ -54,9 +54,12 @@ const Editor = ({ id, editorText, editorInitialLanguage }) => {
         window.php = php;
         window.lezer = lezer;
         window.python = python;
-        if (store.bytecrowdText.toString() != "")
-            store.bytecrowdText.insert(0, editorText);
         setEditorLanguage(Function('return ' + editorInitialLanguage.toString())());
+        setTimeout(() => {
+            if (store.bytecrowdText.toString() === "")
+                store.bytecrowdText.insert(0, editorText);
+        }, 1000);
+
     }, [])
 
     useEffect(() => {
