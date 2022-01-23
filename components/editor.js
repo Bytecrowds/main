@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react';
 import { useCodeMirror } from '@uiw/react-codemirror';
+import { oneDark } from '@codemirror/theme-one-dark';
 import { javascript } from '@codemirror/lang-javascript';
 import { cpp } from '@codemirror/lang-cpp';
 import { html } from '@codemirror/lang-html';
@@ -21,6 +22,7 @@ import { keymap } from '@codemirror/view'
 import store from '../realtime/store';
 import { getWebSocketProvider } from '../realtime/store';
 
+
 const Editor = ({ id, editorText, editorInitialLanguage }) => {
     const editor = useRef();
     const [editorLanguage, setEditorLanguage] = useState(javascript());
@@ -30,8 +32,9 @@ const Editor = ({ id, editorText, editorInitialLanguage }) => {
     const { setContainer } = useCodeMirror({
         value: ytext.toString(),
         container: editor.current,
+        theme: oneDark,
         extensions: [
-            keymap.of([
+            keymap.of([ 
                 ...yUndoManagerKeymap
             ]),
             basicSetup,
@@ -75,13 +78,13 @@ const Editor = ({ id, editorText, editorInitialLanguage }) => {
             <div style={{
                 position: "fixed",
                 bottom: 0,
-                backgroundColor: "#9ecfff",
+                backgroundColor: "#18db87",
                 width: "100%",
                 height: "3%",
                 marginBottom: 0,
                 paddingBottom: 0,
             }}>
-                <label htmlFor="languages">Language:</label>
+                <label htmlFor="languages" style={{ color: "black" }}>Language:</label>
                 <select
                     name="languages"
                     defaultValue={editorInitialLanguage}
@@ -99,6 +102,9 @@ const Editor = ({ id, editorText, editorInitialLanguage }) => {
                         })
                     }
                     }
+                    style={{
+                        color: "black"
+                    }}
                 >
                     <option value="javascript()">Javascript</option>
                     <option value="cpp()">C++</option>

@@ -1,21 +1,21 @@
 import Head from "next/head"
+import NextLink from 'next/link';
 import { useState } from "react"
 import { useEffect } from "react";
+import { Flex } from '@chakra-ui/react';
+import { Link } from "@chakra-ui/react";
+import { Spacer } from '@chakra-ui/react';
+import { Text } from '@chakra-ui/react';
+import { Button } from '@chakra-ui/react';
+
 
 export default function Home() {
-
-  const [fileHistory, setFileHistory] = useState([]);
-  const [battlegrounds, setBattlegrounds] = useState(["politicalMonster", "poetry", "meetup"]);
-
   const [randomLink, setRandomLink] = useState("/bytecrowds/snippetzone");
+  const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    let fileHistoryLocal = JSON.parse(localStorage.getItem("fileHistory") || "[]");
-    if (fileHistoryLocal.length) {
-      setFileHistory(fileHistoryLocal);
-    }
-
     setRandomLink("/bytecrowds/" + Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 7));
+    setIsMounted(true);
   }, [])
 
 
@@ -23,108 +23,71 @@ export default function Home() {
     <>
       <Head>
         <title>Bytecrowds - Landing</title>
-        <link rel="stylesheet" href="https://cdn.rawgit.com/Chalarangelo/mini.css/v3.0.1/dist/mini-default.min.css"></link>
         <meta name="viewport" content="width=device-width, initial-scale=1"></meta>
       </Head>
-      <div className="container">
-        <header>
-          <a href="#" className="logo">Bytecrowds</a>
-          <a href={randomLink} className="button">Share a snippet</a>
-          <a href="#" className="button">Contact us</a>
-        </header>
-        <div className="row">
-          <div className="col-sm"></div>
-          <div className="col-sm-10">
-            <h1>Bytecrowds<small>Code-sharing fast and easy</small></h1>
-          </div>
-          <div className="col-sm"></div>
-        </div>
-        <div className="row">
-          <div className="col-sm"></div>
-          <div className="col-sm-10">
-            <p>Share <kbd>code</kbd> with your <code>friends</code>, and<code>colleagues</code> faster than ever before.</p>
-            <pre>{`function equals(P, NP){
-  return Math.random(0, 1);
-}`}</pre>
-          </div>
-          <div className="col-sm"></div>
-        </div>
-        <div className="row">
-          <div className="col-sm"></div>
-          <div id="shareasnip" className="col-sm-10">
-            <a href={randomLink} className="button secondary">
-              Share a snippet now!
-            </a>
-          </div>
-          <div className="col-sm"></div>
-        </div>
-        <div className="row">
-          <div className="col-sm">
-          </div>
-          {/* <div className="col-sm-10"> */}
-          <div className="card">
-            <h4>Live code sharing <small>Live code editor that is focused on speed.</small></h4>
-          </div>
-          <div className="card">
-            <h4>Syntax highlighting <small>Syntax highlighting for multiple languages.</small></h4>
-          </div>
-          <div className="card">
-            <h4>Platform independent<small>Works cross platform.</small></h4>
-          </div>
-          <div className="card">
-            <h4>Minimal memory consuption<small>Small memory footprint.</small></h4>
-          </div>
-          {/* </div> */}
-          <div className="col-sm"></div>
-        </div>
-        <div className="row">
-          <div className="col-sm"></div>
-          <div className="col-sm-10">
-            <h2>File history<small>Files you accessed before</small></h2>
-          </div>
-          <div className="col-sm"></div>
-        </div>
-
-        <div className="row">
-          <div className="col-sm"></div>
-          <div className="col-sm-10">
-            {fileHistory.length > 0 &&
-              <nav>
-                {fileHistory.map((el, idx) => {
-                  return (<a key={idx} href={"/bytecrowds/" + el}>{idx + 1 + ". " + el}</a>)
-                })}
-              </nav>
+      <Flex>
+        <NextLink href="/about" passHref>
+          <Text fontSize="20px">
+            <Link>
+              about us
+            </Link>
+          </Text>
+        </NextLink>
+        <Spacer />
+        <NextLink href="/contact" passHref>
+          <Text fontSize="20px">
+            <Link>
+              contact
+            </Link>
+          </Text>
+        </NextLink>
+      </Flex>
+      <Flex flexDirection="column" marginTop={{
+        "2xl": "130px",
+        xl: "70px",
+        lg: "70px",
+        md: "70px",
+        base: "10px"
+      }} marginLeft={{
+        "2xl": "200px",
+        lg: "120px",
+        md: "80px",
+        base: "5px"
+      }}>
+        <div>
+          <Flex flexDirection={{
+            base: 'column',
+            xl: 'row',
+            lg: 'row',
+            md: 'row'
+          }
+          }>
+            <Text fontSize="65px" fontWeight="600">Welcome to</Text>
+            <Text marginLeft={{
+              xl: "14px",
+              lg: "14px",
+              md: "14px"
             }
-            {fileHistory.length === 0 && <p>No file history.</p>}
-          </div>
-          <div className="col-sm"></div>
+            } fontSize="65px" fontWeight="600" color="orange.200">Bytecrowds</Text>
+          </Flex>
+          <Text marginTop="20px" fontWeight="600" fontSize="35px">&quot;the easy & quick way to share code with friends and teams. currently in beta&quot;</Text>
+          <Button colorScheme='orange' marginTop="75px" width={{
+            xl: "450px",
+            lg: "450px",
+            md: "450px"
+          }} height="90px" fontSize="30px" fontWeight="600" onClick={() => isMounted ? location.href = randomLink : undefined}>new bytecrowd</Button>
         </div>
-        <div className="row">
-          <div className="col-sm"></div>
-          <div className="col-sm-10">
-            <h2>Public battlegrounds<small>Files where you can fight for what matters.</small></h2>
-          </div>
-          <div className="col-sm"></div>
-        </div>
-        <div className="row">
-          <div className="col-sm"></div>
-          <div className="col-sm-10">
-            {battlegrounds.length > 0 &&
-              <nav>
-                {battlegrounds.map((el, idx) => {
-                  return (<a key={idx} href={"/bytecrowds/" + el}>{idx + 1 + ". " + el}</a>)
-                })}
-              </nav>
-            }
-            {battlegrounds.length === 0 && <p>No battlegrounds available today.</p>}
-          </div>
-          <div className="col-sm"></div>
-        </div>
-        <footer className="stiky">
-          <p>Website created by <a href="">Tudor Zgimbau</a> and <a href="https://www.linkedin.com/in/mihai-cosmin-ivanov-4136a9195">Ivanov Mihai Cosmin.</a></p>
-          <p>Contact us</p>
-        </footer>
-      </div>
+        <Flex flexDirection="row" width="400px" marginTop={{
+          xl: "180px",
+          lg: "180px",
+          md: "180px",
+          base: "50px"
+        }} justifyItems="center">
+          <Text fontSize="14px" marginRight="10px">developed in</Text>
+          <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 3 2"><path fill="#002B7F" d="M0 0h3v2H0z" /><path fill="#FCD116" d="M1 0h2v2H1z" /><path fill="#CE1126" d="M2 0h1v2H2z" /></svg>
+          <Text marginLeft="10px" fontSize="14px">by <Link href="https://github.com/TudorZgimbau" color="orange.200" isExternal>Tudor Zgîmbău</Link> and <Link href="https://www.linkedin.com/in/mihai-cosmin-ivanov-4136a9195" color="orange.200" isExternal>Mihai Cosmin Ivanov</Link></Text>
+        </Flex>
+      </Flex>
     </>
   )
 }
