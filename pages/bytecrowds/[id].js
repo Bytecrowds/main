@@ -10,10 +10,10 @@ const Editor = dynamic(() => import("../../components/editor"), {
 export async function getServerSideProps(context) {
     const { id } = context.query;
 
-    let _text1 = await fetch("http://127.0.0.1:5000/get/" + id);
+    let _text1 = await fetch("https://bytecrowds-database-server.herokuapp.com/" + id);
     let editorText = await _text1.text();
 
-    let _text2 = await fetch("http://127.0.0.1:5000/getLanguage/" + id);
+    let _text2 = await fetch("https://bytecrowds-database-server.herokuapp.com/getLanguage/" + id);
     let editorInitialLanguage = await _text2.text();
 
     if (editorInitialLanguage === "") {

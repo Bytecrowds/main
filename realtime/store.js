@@ -9,7 +9,7 @@ const doc = getYjsValue(store);
 
 export const getWebSocketProvider = (id) => {
     const webSocketProvider = new WebsocketProvider(
-        "ws://localhost:1234",
+        "wss://bytecrowds-websocket-server.herokuapp.com",
         id,
         doc
     );

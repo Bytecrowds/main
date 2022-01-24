@@ -34,7 +34,7 @@ const Editor = ({ id, editorText, editorInitialLanguage }) => {
         container: editor.current,
         theme: oneDark,
         extensions: [
-            keymap.of([ 
+            keymap.of([
                 ...yUndoManagerKeymap
             ]),
             basicSetup,
@@ -90,7 +90,7 @@ const Editor = ({ id, editorText, editorInitialLanguage }) => {
                     defaultValue={editorInitialLanguage}
                     onChange={e => {
                         setEditorLanguage(Function('return ' + e.target.value.toString())());
-                        fetch("http://127.0.0.1:5000/updateLanguage", {
+                        fetch("https://bytecrowds-database-server.herokuapp.com/updateLanguage", {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'text/plain'
