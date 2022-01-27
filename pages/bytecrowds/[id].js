@@ -4,15 +4,16 @@ import dynamic from "next/dynamic";
 const Editor = dynamic(() => import("../../components/editor"), {
     ssr: false
 });
+import { databaseServer } from "../../config";
 
 
 export async function getServerSideProps(context) {
     const { id } = context.query;
 
-    let _text1 = await fetch("https://bytecrowds-database-server.herokuapp.com/get/" + id);
+    let _text1 = await fetch(databaseServer + "/get/" + id);
     let editorText = await _text1.text();
 
-    let _text2 = await fetch("https://bytecrowds-database-server.herokuapp.com/getLanguage/" + id);
+    let _text2 = await fetch(databaseServer + "/getLanguage/" + id);
     let editorInitialLanguage = await _text2.text();
 
     if (editorInitialLanguage === "") {

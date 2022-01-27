@@ -22,6 +22,8 @@ import { keymap } from '@codemirror/view'
 import store from '../realtime/store';
 import { getWebSocketProvider } from '../realtime/store';
 
+import { databaseServer } from "../config";
+
 
 const Editor = ({ id, editorText, editorInitialLanguage }) => {
     const editor = useRef();
@@ -90,7 +92,7 @@ const Editor = ({ id, editorText, editorInitialLanguage }) => {
                     defaultValue={editorInitialLanguage}
                     onChange={e => {
                         setEditorLanguage(Function('return ' + e.target.value.toString())());
-                        fetch("https://bytecrowds-database-server.herokuapp.com/updateLanguage", {
+                        fetch(databaseServer + "/updateLanguage", {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'text/plain'
