@@ -1,10 +1,10 @@
 import Head from "next/head";
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
-const Editor = dynamic(() => import("../../components/editor"), {
+const Editor = dynamic(() => import("../components/editor"), {
     ssr: false
 });
-import { databaseServer } from "../../config";
+import { databaseServer } from "../config";
 
 
 export async function getServerSideProps(context) {
