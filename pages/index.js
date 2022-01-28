@@ -10,11 +10,11 @@ import { Button } from '@chakra-ui/react';
 
 
 export default function Home() {
-  const [randomLink, setRandomLink] = useState("/bytecrowds/snippetzone");
+  const [randomLink, setRandomLink] = useState("/snippetzone");
   const [isMounted, setIsMounted] = useState(false);
 
   useEffect(() => {
-    setRandomLink("/bytecrowds/" + Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 7));
+    setRandomLink("/" + Math.random().toString(36).replace(/[^a-z]+/g, '').substr(0, 7));
     setIsMounted(true);
   }, [])
 
