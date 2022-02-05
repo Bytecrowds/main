@@ -120,6 +120,7 @@ const Editor = ({ id, editorText, editorInitialLanguage }) => {
                     <option value="wast()">Wast</option>
                     <option value="lezer()">Lezer</option>
                     <option value="python()">Python</option>
+                    <option value="php()">PHP</option>
                 </select>
             </div >
         </>
