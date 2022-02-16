@@ -22,8 +22,6 @@ import { keymap } from '@codemirror/view'
 import store from '../realtime/store';
 import { getWebSocketProvider } from '../realtime/store';
 
-import { databaseServer } from "../config";
-
 
 const Editor = ({ id, editorText, editorInitialLanguage }) => {
     const editor = useRef();
@@ -92,7 +90,7 @@ const Editor = ({ id, editorText, editorInitialLanguage }) => {
                     defaultValue={editorInitialLanguage}
                     onChange={e => {
                         setEditorLanguage(Function('return ' + e.target.value.toString())());
-                        fetch(databaseServer + "/updateLanguage", {
+                        fetch(process.env.NEXT_PUBLIC_DATABASE_SERVER + "/updateLanguage", {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'text/plain'

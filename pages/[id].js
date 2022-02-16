@@ -4,11 +4,10 @@ import dynamic from "next/dynamic";
 const Editor = dynamic(() => import("../components/editor"), {
     ssr: false
 });
-import { databaseServer } from "../config";
-
 
 export async function getServerSideProps(context) {
     const { id } = context.query;
+    const databaseServer = process.env.NEXT_PUBLIC_DATABASE_SERVER;
 
     let _text1 = await fetch(databaseServer + "/get/" + id);
     let editorText = await _text1.text();
