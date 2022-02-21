@@ -1,0 +1,3 @@
+# ENV specs
+- NEXT_PUBLIC_DATABASE_SERVER => string
+- NEXT_PUBLIC_WEBSOCKER_SERVER => string
