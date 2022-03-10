@@ -5,7 +5,7 @@ import { useEffect } from 'react'
 
 function MyApp({ Component, pageProps }) {
   useEffect(async () => {
-    let page = document.URL.substring(39);
+    let page = document.URL.substring(27);
     console.log(page);
     if (page === "")
       page = "index";
