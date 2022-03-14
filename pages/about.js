@@ -14,7 +14,7 @@ const About = () => {
         editor that supports multiple languages.
       </Text>
       <Text marginTop="120px" fontSize="6xl" color="orange.200">
-        Who's in charge of the project?
+        Who&apos;s in charge of the project?
       </Text>
       <Text fontSize="30px">
         Currently the site is operated solely by me, Tudor Zgimbau. Find more in
