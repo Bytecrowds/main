@@ -10,9 +10,6 @@ function MyApp({ Component, pageProps }) {
     if (page === "")
       page = "index";
     await fetch(process.env.NEXT_PUBLIC_ANALYTICS_SERVER + "/analytics/" + page);
-
-    alert("Bytecrowds is currently down due to hosting problems. We are sorry and we thank you for your patience!");
-    location.href = "https://google.com";
   })
   
   return (
