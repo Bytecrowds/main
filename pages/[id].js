@@ -1,4 +1,3 @@
-import Head from "next/head";
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
 const Editor = dynamic(() => import("../components/editor"), {
@@ -32,9 +31,6 @@ const Bytecrowd = ({ editorText, editorInitialLanguage }) => {
 
   return (
     <>
-      <Head>
-        <title>Bytecrowd editor - {id}</title>
-      </Head>
       <Editor
         id={id}
         editorText={editorText}

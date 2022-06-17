@@ -91,7 +91,7 @@ const Editor = ({ id, editorText, editorInitialLanguage }) => {
             });
           }}
           style={{
-            color: "black",
+            color: "white",
           }}
         >
           <option value="javascript()">Javascript</option>
