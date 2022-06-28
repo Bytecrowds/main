@@ -19,11 +19,11 @@ import { yCollab, yUndoManagerKeymap } from "y-codemirror.next";
 import { keymap } from "@codemirror/view";
 
 import store from "../realtime/store";
-import { getWebSocketProvider } from "../realtime/store";
+import { getAblyProvider } from "../realtime/store";
 
 const Editor = ({ id, editorText, editorInitialLanguage }) => {
   const [editorLanguage, setEditorLanguage] = useState(javascript());
-  const webSocketProvider = getWebSocketProvider(id);
+  const ablyProvider = getAblyProvider(id);
   let ytext = store.bytecrowdText;
 
   useEffect(() => {
@@ -55,7 +55,7 @@ const Editor = ({ id, editorText, editorInitialLanguage }) => {
         extensions={[
           keymap.of([...yUndoManagerKeymap]),
           editorLanguage,
-          yCollab(ytext, webSocketProvider.awareness),
+          yCollab(ytext),
         ]}
       />
       <div

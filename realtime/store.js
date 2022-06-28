@@ -1,22 +1,18 @@
 import { syncedStore, getYjsValue } from "@syncedstore/core";
-import { WebsocketProvider } from "y-websocket";
-import userColor from "../utils/color";
+import AblyProvider from "./ablyProvider";
+import * as Ably from "ably";
 
 const store = syncedStore({ bytecrowdText: "text" });
 export default store;
 
 const doc = getYjsValue(store);
 
-export const getWebSocketProvider = (id) => {
-  const webSocketProvider = new WebsocketProvider(
-    process.env.NEXT_PUBLIC_WEBSOCKET_SERVER,
-    id,
-    doc
-  );
-  webSocketProvider.awareness.setLocalStateField("user", {
-    name: "Anonymous " + Math.floor(Math.random() * 100),
-    color: userColor.color,
-    colorLight: userColor.light,
+export const getAblyProvider = (id) => {
+  const ablyClient = new Ably.Realtime({
+    key: process.env.NEXT_PUBLIC_ABLY_API_KEY,
   });
-  return webSocketProvider;
+
+  const ablyProvider = new AblyProvider(ablyClient, id, doc);
+
+  return ablyProvider;
 };

@@ -28,12 +28,12 @@
     "@syncedstore/core": "^0.3.9",
     "@syncedstore/react": "^0.3.9",
     "@uiw/react-codemirror": "^4.8.1",
+    "ably": "^1.2.25",
     "framer-motion": "^6.3.11",
     "next": "^12.1.6",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "y-codemirror.next": "^0.3.0",
-    "y-websocket": "^1.4.3",
     "yjs": "^13.5.39"
   },
   "devDependencies": {
