@@ -1,4 +1,6 @@
 import { useEffect, useState } from "react";
+import { useSyncedStore } from "@syncedstore/react";
+
 import CodeMirror from "@uiw/react-codemirror";
 import { oneDark } from "@codemirror/theme-one-dark";
 import { javascript } from "@codemirror/lang-javascript";
@@ -21,12 +23,20 @@ import { keymap } from "@codemirror/view";
 import store from "../realtime/store";
 import { getWebSocketProvider } from "../realtime/store";
 
-const Editor = ({ id, editorText, editorInitialLanguage }) => {
+const Editor = ({ id, editorInitialText, editorInitialLanguage }) => {
   const [editorLanguage, setEditorLanguage] = useState(javascript());
-  const webSocketProvider = getWebSocketProvider(id);
-  let ytext = store.bytecrowdText;
+
+  // create a pseudo-provider to prevent awareness being altered by re-renders
+  const [webSocketProvider, setWebsocketProvider] = useState({
+    awareness: null,
+  });
+
+  let editorText = useSyncedStore(store).bytecrowdText;
 
   useEffect(() => {
+    // at first render connect the provider to the websocket server
+    setWebsocketProvider(getWebSocketProvider(id));
+
     window.javascript = javascript;
     window.cpp = cpp;
     window.html = html;
@@ -40,22 +50,19 @@ const Editor = ({ id, editorText, editorInitialLanguage }) => {
     window.php = php;
     window.lezer = lezer;
     window.python = python;
-    setEditorLanguage(Function("return " + editorInitialLanguage.toString())());
-    setTimeout(() => {
-      if (store.bytecrowdText.toString() === "")
-        store.bytecrowdText.insert(0, editorText);
-    }, 1000);
+
+    setEditorLanguage(Function("return " + editorInitialLanguage)());
   }, []);
 
   return (
     <>
       <CodeMirror
-        value={ytext.toString()}
+        value={editorText.toString()}
         theme={oneDark}
         extensions={[
           keymap.of([...yUndoManagerKeymap]),
           editorLanguage,
-          yCollab(ytext, webSocketProvider.awareness),
+          yCollab(editorText, webSocketProvider.awareness),
         ]}
       />
       <div
