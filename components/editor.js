@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useSyncedStore } from "@syncedstore/react";
 import CodeMirror from "@uiw/react-codemirror";
 import { oneDark } from "@codemirror/theme-one-dark";
 import { javascript } from "@codemirror/lang-javascript";
@@ -21,12 +22,13 @@ import { keymap } from "@codemirror/view";
 import store from "../realtime/store";
 import { getAblyProvider } from "../realtime/store";
 
-const Editor = ({ id, editorText, editorInitialLanguage }) => {
+const Editor = ({ id, editorInitialText, editorInitialLanguage }) => {
   const [editorLanguage, setEditorLanguage] = useState(javascript());
-  const ablyProvider = getAblyProvider(id);
-  let ytext = store.bytecrowdText;
+  const [ablyProvider, setAblyProvider] = useState({ awareness: null });
+  const editorText = useSyncedStore(store).bytecrowdText;
 
   useEffect(() => {
+    setAblyProvider(getAblyProvider(id));
     window.javascript = javascript;
     window.cpp = cpp;
     window.html = html;
@@ -41,21 +43,17 @@ const Editor = ({ id, editorText, editorInitialLanguage }) => {
     window.lezer = lezer;
     window.python = python;
     setEditorLanguage(Function("return " + editorInitialLanguage.toString())());
-    setTimeout(() => {
-      if (store.bytecrowdText.toString() === "")
-        store.bytecrowdText.insert(0, editorText);
-    }, 1000);
   }, []);
 
   return (
     <>
       <CodeMirror
-        value={ytext.toString()}
+        value={editorText.toString()}
         theme={oneDark}
         extensions={[
           keymap.of([...yUndoManagerKeymap]),
           editorLanguage,
-          yCollab(ytext),
+          yCollab(editorText, ablyProvider.awareness),
         ]}
       />
       <div

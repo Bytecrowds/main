@@ -36,7 +36,6 @@ export default class AblyProvider {
         Y.applyUpdate(this.doc, new Uint8Array(msg.data), this);
         break;
       default:
-        // tslint:disable-next-line:no-console
         console.error(`Unexpected message: ${msg.name}`);
         break;
     }
