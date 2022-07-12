@@ -17,7 +17,7 @@ export async function getServerSideProps(context) {
     headers: {
       Authorization:
         "Basic " +
-        Buffer.from(process.env.NEXT_PUBLIC_UPDATE_INTERVAL).toString("base64"),
+        Buffer.from(process.env.NEXT_PUBLIC_ABLY_API_KEY).toString("base64"),
     },
   });
   if ((await _res.json()).length == 0) requiresUpdate = true;
