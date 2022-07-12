@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useSyncedStore } from "@syncedstore/react";
-
 import CodeMirror from "@uiw/react-codemirror";
 import { oneDark } from "@codemirror/theme-one-dark";
 import { javascript } from "@codemirror/lang-javascript";
@@ -21,22 +20,23 @@ import { yCollab, yUndoManagerKeymap } from "y-codemirror.next";
 import { keymap } from "@codemirror/view";
 
 import store from "../realtime/store";
-import { getWebSocketProvider } from "../realtime/store";
+import { getAblyProvider } from "../realtime/store";
 
-const Editor = ({ id, editorInitialText, editorInitialLanguage }) => {
+import updateDB from "../utils/updateDB";
+
+const Editor = ({
+  id,
+  editorInitialText,
+  editorInitialLanguage,
+  requiresUpdate,
+}) => {
   const [editorLanguage, setEditorLanguage] = useState(javascript());
-
-  // create a pseudo-provider to prevent awareness being altered by re-renders
-  const [webSocketProvider, setWebsocketProvider] = useState({
-    awareness: null,
-  });
-
-  let editorText = useSyncedStore(store).bytecrowdText;
+  const [prevText, setPrevText] = useState(editorInitialText);
+  const editorText = useSyncedStore(store).bytecrowdText;
 
   useEffect(() => {
-    // at first render connect the provider to the websocket server
-    setWebsocketProvider(getWebSocketProvider(id));
-
+    if (requiresUpdate) editorText.insert(0, editorInitialText);
+    let ably = getAblyProvider(id);
     window.javascript = javascript;
     window.cpp = cpp;
     window.html = html;
@@ -50,9 +50,17 @@ const Editor = ({ id, editorInitialText, editorInitialLanguage }) => {
     window.php = php;
     window.lezer = lezer;
     window.python = python;
+    setEditorLanguage(Function("return " + editorInitialLanguage.toString())());
 
-    setEditorLanguage(Function("return " + editorInitialLanguage)());
+    const interval = setInterval(() => {
+      setPrevText(editorText.toString());
+    }, parseInt(process.env.NEXT_PUBLIC_UPDATE_INTERVAL));
+    return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    updateDB({ name: id, text: editorText.toString() });
+  }, [prevText]);
 
   return (
     <>
@@ -62,7 +70,7 @@ const Editor = ({ id, editorInitialText, editorInitialLanguage }) => {
         extensions={[
           keymap.of([...yUndoManagerKeymap]),
           editorLanguage,
-          yCollab(editorText, webSocketProvider.awareness),
+          yCollab(editorText),
         ]}
       />
       <div
@@ -86,15 +94,9 @@ const Editor = ({ id, editorInitialText, editorInitialLanguage }) => {
             setEditorLanguage(
               Function("return " + e.target.value.toString())()
             );
-            fetch(process.env.NEXT_PUBLIC_DATABASE_SERVER + "/updateLanguage", {
-              method: "POST",
-              headers: {
-                "Content-Type": "text/plain",
-              },
-              body: JSON.stringify({
-                bytecrowd: id,
-                language: e.target.value.toString(),
-              }),
+            updateDB({
+              name: id,
+              language: e.target.value.toString(),
             });
           }}
           style={{

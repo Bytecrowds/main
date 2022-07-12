@@ -18,7 +18,7 @@ const Home = () => {
         Math.random()
           .toString(36)
           .replace(/[^a-z]+/g, "")
-          .substr(0, 7)
+          .substring(0, 7)
     );
     setIsMounted(true);
   }, []);
