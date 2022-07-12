@@ -22,13 +22,21 @@ import { keymap } from "@codemirror/view";
 import store from "../realtime/store";
 import { getAblyProvider } from "../realtime/store";
 
-const Editor = ({ id, editorInitialText, editorInitialLanguage }) => {
+import updateDB from "../utils/updateDB";
+
+const Editor = ({
+  id,
+  editorInitialText,
+  editorInitialLanguage,
+  requiresUpdate,
+}) => {
   const [editorLanguage, setEditorLanguage] = useState(javascript());
-  const [ablyProvider, setAblyProvider] = useState({ awareness: null });
+  const [prevText, setPrevText] = useState(editorInitialText);
   const editorText = useSyncedStore(store).bytecrowdText;
 
   useEffect(() => {
-    setAblyProvider(getAblyProvider(id));
+    if (requiresUpdate) editorText.insert(0, editorInitialText);
+    let ably = getAblyProvider(id);
     window.javascript = javascript;
     window.cpp = cpp;
     window.html = html;
@@ -43,7 +51,16 @@ const Editor = ({ id, editorInitialText, editorInitialLanguage }) => {
     window.lezer = lezer;
     window.python = python;
     setEditorLanguage(Function("return " + editorInitialLanguage.toString())());
+
+    const interval = setInterval(() => {
+      setPrevText(editorText.toString());
+    }, parseInt(process.env.NEXT_PUBLIC_UPDATE_INTERVAL));
+    return () => clearInterval(interval);
   }, []);
+
+  useEffect(() => {
+    updateDB({ name: id, text: editorText.toString() });
+  }, [prevText]);
 
   return (
     <>
@@ -53,7 +70,7 @@ const Editor = ({ id, editorInitialText, editorInitialLanguage }) => {
         extensions={[
           keymap.of([...yUndoManagerKeymap]),
           editorLanguage,
-          yCollab(editorText, ablyProvider.awareness),
+          yCollab(editorText),
         ]}
       />
       <div
@@ -77,15 +94,9 @@ const Editor = ({ id, editorInitialText, editorInitialLanguage }) => {
             setEditorLanguage(
               Function("return " + e.target.value.toString())()
             );
-            fetch(process.env.NEXT_PUBLIC_DATABASE_SERVER + "/updateLanguage", {
-              method: "POST",
-              headers: {
-                "Content-Type": "text/plain",
-              },
-              body: JSON.stringify({
-                bytecrowd: id,
-                language: e.target.value.toString(),
-              }),
+            updateDB({
+              name: id,
+              language: e.target.value.toString(),
             });
           }}
           style={{

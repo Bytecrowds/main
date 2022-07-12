@@ -6,27 +6,39 @@ const Editor = dynamic(() => import("../components/editor"), {
 
 export async function getServerSideProps(context) {
   const { id } = context.query;
-  const databaseServer = process.env.NEXT_PUBLIC_DATABASE_SERVER;
 
-  let _text1 = await fetch(databaseServer + "/get/" + id);
-  let editorInitialText = await _text1.text();
+  let _raw = await fetch(
+    process.env.NEXT_PUBLIC_DATABASE_SERVER + "/bytecrowd/" + id
+  );
+  let bytecrowd = await _raw.json();
 
-  let _text2 = await fetch(databaseServer + "/getLanguage/" + id);
-  let editorInitialLanguage = await _text2.text();
+  let requiresUpdate = false;
+  let _res = await fetch("https://rest.ably.io/channels/" + id + "/presence", {
+    headers: {
+      Authorization:
+        "Basic " +
+        Buffer.from(process.env.NEXT_PUBLIC_UPDATE_INTERVAL).toString("base64"),
+    },
+  });
+  if ((await _res.json()).length == 0) requiresUpdate = true;
 
-  if (editorInitialLanguage === "") {
-    editorInitialLanguage = "javascript()";
-  }
+  let editorInitialText = bytecrowd.text || "";
+  let editorInitialLanguage = bytecrowd.language || "javascript()";
 
   return {
     props: {
       editorInitialText,
       editorInitialLanguage,
+      requiresUpdate,
     },
   };
 }
 
-const Bytecrowd = ({ editorInitialText, editorInitialLanguage }) => {
+const Bytecrowd = ({
+  editorInitialText,
+  editorInitialLanguage,
+  requiresUpdate,
+}) => {
   const { id } = useRouter().query;
 
   return (
@@ -35,6 +47,7 @@ const Bytecrowd = ({ editorInitialText, editorInitialLanguage }) => {
         id={id}
         editorInitialText={editorInitialText}
         editorInitialLanguage={editorInitialLanguage}
+        requiresUpdate={requiresUpdate}
       ></Editor>
     </>
   );
