@@ -8,7 +8,7 @@ export async function getServerSideProps(context) {
   const { id } = context.query;
 
   let _raw = await fetch(
-    process.env.NEXT_PUBLIC_DATABASE_SERVER + "/bytecrowd/" + id
+    process.env.NEXT_PUBLIC_BACKEND + "/bytecrowd/" + id
   );
   let bytecrowd = await _raw.json();
 

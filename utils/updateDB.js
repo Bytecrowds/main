@@ -1,5 +1,5 @@
 const updateDB = (payload) => {
-  fetch(process.env.NEXT_PUBLIC_DATABASE_SERVER + "/update", {
+  fetch(process.env.NEXT_PUBLIC_BACKEND + "/update", {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
