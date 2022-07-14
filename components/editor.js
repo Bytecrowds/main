@@ -28,15 +28,18 @@ const Editor = ({
   id,
   editorInitialText,
   editorInitialLanguage,
-  requiresUpdate,
+  fetchFromDB,
 }) => {
   const [editorLanguage, setEditorLanguage] = useState(javascript());
   const [prevText, setPrevText] = useState(editorInitialText);
   const editorText = useSyncedStore(store).bytecrowdText;
 
   useEffect(() => {
-    if (requiresUpdate) editorText.insert(0, editorInitialText);
+    if (fetchFromDB) editorText.insert(0, editorInitialText);
+    // Setup the Ably provider at first render to prevent spawning connections.
     let ably = getAblyProvider(id);
+
+    // Expose the codemirror lang modes to the client as part of the window object.
     window.javascript = javascript;
     window.cpp = cpp;
     window.html = html;
@@ -52,13 +55,16 @@ const Editor = ({
     window.python = python;
     setEditorLanguage(Function("return " + editorInitialLanguage.toString())());
 
+    // Every x seconds, store the current text in a variable.
     const interval = setInterval(() => {
       setPrevText(editorText.toString());
     }, parseInt(process.env.NEXT_PUBLIC_UPDATE_INTERVAL));
+    // Clear the interval to prevent memory leaks and duplication.
     return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {
+    // If the text changed, update the DB.
     updateDB({ name: id, text: editorText.toString() });
   }, [prevText]);
 
