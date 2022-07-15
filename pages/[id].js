@@ -1,6 +1,6 @@
 import { useRouter } from "next/router";
 import dynamic from "next/dynamic";
-// Import the Editor client-side only to avoid initializing providers multiple times
+// Import the Editor client-side only to avoid initializing providers multiple times.
 const Editor = dynamic(() => import("../components/editor"), {
   ssr: false,
 });
@@ -13,7 +13,7 @@ export async function getServerSideProps(context) {
 
   // If the bytecrowd doesn't exist, use default values.
   let editorInitialText = bytecrowd.text || "";
-  let editorInitialLanguage = bytecrowd.language || "javascript()";
+  let editorInitialLanguage = bytecrowd.language || "javascript";
 
   let fetchFromDB = false;
   let _res = await fetch("https://rest.ably.io/channels/" + id + "/presence", {
