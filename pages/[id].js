@@ -11,9 +11,12 @@ export async function getServerSideProps(context) {
   let _raw = await fetch(process.env.NEXT_PUBLIC_BACKEND + "/bytecrowd/" + id);
   let bytecrowd = await _raw.json();
 
-  // If the bytecrowd doesn't exist, use default values.
+  // If the bytecrowd doesn't exist, use the default values.
   let editorInitialText = bytecrowd.text || "";
   let editorInitialLanguage = bytecrowd.language || "javascript";
+
+  // TODO: check if user is logged in.
+  let requiresAuth = bytecrowd.requiresAuth || false;
 
   let fetchFromDB = false;
   let _res = await fetch("https://rest.ably.io/channels/" + id + "/presence", {
@@ -34,6 +37,7 @@ export async function getServerSideProps(context) {
       editorInitialText,
       editorInitialLanguage,
       fetchFromDB,
+      requiresAuth,
     },
   };
 }
@@ -42,6 +46,7 @@ const Bytecrowd = ({
   editorInitialText,
   editorInitialLanguage,
   fetchFromDB,
+  requiresAuth,
 }) => {
   const { id } = useRouter().query;
 
@@ -52,6 +57,7 @@ const Bytecrowd = ({
         editorInitialText={editorInitialText}
         editorInitialLanguage={editorInitialLanguage}
         fetchFromDB={fetchFromDB}
+        requiresAuth={requiresAuth}
       ></Editor>
     </>
   );

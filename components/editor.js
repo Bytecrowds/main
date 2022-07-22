@@ -3,6 +3,9 @@ import { useSyncedStore } from "@syncedstore/react";
 import CodeMirror from "@uiw/react-codemirror";
 import { oneDark } from "@codemirror/theme-one-dark";
 
+import { useDisclosure } from "@chakra-ui/react";
+import Auth from "./auth";
+
 import { yCollab, yUndoManagerKeymap } from "y-codemirror.next";
 import { keymap } from "@codemirror/view";
 
@@ -17,7 +20,12 @@ const Editor = ({
   editorInitialText,
   editorInitialLanguage,
   fetchFromDB,
+  requiresAuth,
 }) => {
+  // Controls the auth modal.
+  const { isOpen, onClose } = useDisclosure({
+    defaultIsOpen: requiresAuth,
+  });
   const [editorLanguage, setEditorLanguage] = useState(
     langs[editorInitialLanguage]
   );
@@ -25,6 +33,8 @@ const Editor = ({
   const editorText = useSyncedStore(store).bytecrowdText;
 
   useEffect(() => {
+    // If the bytecrowd requires auth and the user is not logged in, open the modal.
+
     if (fetchFromDB) editorText.insert(0, editorInitialText);
     // Setup the Ably provider at first render to prevent spawning connections.
     let ably = getAblyProvider(id);
@@ -44,6 +54,7 @@ const Editor = ({
 
   return (
     <>
+      <Auth isOpen={isOpen} onClose={onClose} />
       <CodeMirror
         value={editorText.toString()}
         theme={oneDark}
@@ -82,7 +93,9 @@ const Editor = ({
           }}
         >
           {langOptions.map((lang) => (
-            <option value={lang}>{lang}</option>
+            <option key={lang} value={lang}>
+              {lang}
+            </option>
           ))}
         </select>
       </div>
