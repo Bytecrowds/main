@@ -5,6 +5,7 @@ import { oneDark } from "@codemirror/theme-one-dark";
 
 import { useDisclosure } from "@chakra-ui/react";
 import Auth from "./auth";
+import SignUp from "./signUp";
 
 import { yCollab, yUndoManagerKeymap } from "y-codemirror.next";
 import { keymap } from "@codemirror/view";
@@ -12,7 +13,7 @@ import { keymap } from "@codemirror/view";
 import store from "../realtime/store";
 import { getAblyProvider } from "../realtime/store";
 
-import updateDB from "../utils/updateDB";
+import { updateDB } from "../utils/db";
 import { langs, langOptions } from "../utils/language";
 
 const Editor = ({
@@ -23,9 +24,18 @@ const Editor = ({
   requiresAuth,
 }) => {
   // Controls the auth modal.
-  const { isOpen, onClose } = useDisclosure({
+  const _disclosure = useDisclosure({
     defaultIsOpen: requiresAuth,
   });
+  const isAuthOpen = _disclosure.isOpen;
+  const onAuthClose = _disclosure.onClose;
+
+  // Controls the sign up modal.
+  const __disclosure = useDisclosure();
+  const onSignUpOpen = __disclosure.onOpen;
+  const isSignUpOpen = __disclosure.isOpen;
+  const onSignUpClose = __disclosure.onClose;
+
   const [editorLanguage, setEditorLanguage] = useState(
     langs[editorInitialLanguage]
   );
@@ -54,7 +64,8 @@ const Editor = ({
 
   return (
     <>
-      <Auth isOpen={isOpen} onClose={onClose} />
+      <Auth isOpen={isAuthOpen} onClose={onAuthClose} id={id} />
+      <SignUp isOpen={isSignUpOpen} onClose={onSignUpClose} id={id} />
       <CodeMirror
         value={editorText.toString()}
         theme={oneDark}
@@ -98,6 +109,18 @@ const Editor = ({
             </option>
           ))}
         </select>
+        {!requiresAuth && (
+          <button
+            style={{
+              marginLeft: "15px",
+              color: "white",
+              backgroundColor: "black",
+            }}
+            onClick={onSignUpOpen}
+          >
+            set auth
+          </button>
+        )}
       </div>
     </>
   );

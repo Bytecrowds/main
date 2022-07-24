@@ -8,8 +8,11 @@ import {
   Input,
   Button,
 } from "@chakra-ui/react";
+import { useRef } from "react";
+import { getBytecrowd } from "../utils/db";
 
-const Auth = ({ isOpen, onClose }) => {
+const Auth = ({ id, isOpen, onClose }) => {
+  const passwordRef = useRef(null);
   return (
     <Modal
       isOpen={isOpen}
@@ -18,22 +21,29 @@ const Auth = ({ isOpen, onClose }) => {
       closeOnOverlayClick={false}
       isCentered
     >
-      <ModalOverlay backdropBlur="50px" />
+      <ModalOverlay backdropFilter="auto" backdropBlur="5px" />
       <ModalContent>
         <ModalHeader>Please log in to acces this bytecrowd</ModalHeader>
-        <ModalBody>
+        <ModalBody justifyContent="center" alignContent="center">
           <Input
-            placeholder="name"
-            _placeholder={{ opacity: 2, color: "#18db87" }}
-          ></Input>
-          <Input
-            marginTop="20px"
+            ref={passwordRef}
             placeholder="password"
-            _placeholder={{ opacity: 2, color: "#18db87" }}
+            _placeholder={{ opacity: 2, color: "brand" }}
           ></Input>
         </ModalBody>
         <ModalFooter justifyContent="center">
-          <Button color="#18db87" variant="outline">
+          <Button
+            onClick={async () => {
+              const bytecrowd = await getBytecrowd(id, {
+                authMethod: "password",
+                password: passwordRef.current.value,
+              });
+
+              if (!bytecrowd.authFailed) onClose();
+            }}
+            color="brand"
+            variant="outline"
+          >
             log in
           </Button>
         </ModalFooter>
