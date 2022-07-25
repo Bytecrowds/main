@@ -66,15 +66,18 @@ const Editor = ({
     <>
       <Auth isOpen={isAuthOpen} onClose={onAuthClose} id={id} />
       <SignUp isOpen={isSignUpOpen} onClose={onSignUpClose} id={id} />
-      <CodeMirror
-        value={editorText.toString()}
-        theme={oneDark}
-        extensions={[
-          keymap.of([...yUndoManagerKeymap]),
-          editorLanguage,
-          yCollab(editorText),
-        ]}
-      />
+      {!isAuthOpen && (
+        <CodeMirror
+          value={editorText.toString()}
+          theme={oneDark}
+          extensions={[
+            keymap.of([...yUndoManagerKeymap]),
+            editorLanguage,
+            yCollab(editorText),
+          ]}
+        />
+      )}
+
       <div
         style={{
           position: "fixed",
