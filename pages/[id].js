@@ -19,8 +19,6 @@ export async function getServerSideProps(context) {
     context.req.headers["x-forwarded-for"]
   );
 
-  console.log(context.req.headers["x-forwarded-for"]);
-
   // If the bytecrowd doesn't exist, use the default values.
   let editorInitialText = bytecrowd.text || "";
   let editorInitialLanguage = bytecrowd.language || "javascript";
