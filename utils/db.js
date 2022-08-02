@@ -15,7 +15,9 @@ export const getBytecrowd = async (id, options) => {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
-      "X-App-Key": process.env.NEXT_PUBLIC_APP_KEY,
+      // Prevent sending the secret header from client when using password auth.
+      "X-App-Key":
+        options.authMethod === "IP" ? process.env.NEXT_PUBLIC_APP_KEY : "",
     },
     body: JSON.stringify(options),
   });

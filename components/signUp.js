@@ -13,7 +13,9 @@ const SignUp = ({ isOpen, onClose, id }) => {
 
   useEffect(() => {
     const fetchPassword = async () => {
-      const _res = await fetch(process.env.NEXT_PUBLIC_BACKEND + "/auth/" + id);
+      const _res = await fetch(
+        process.env.NEXT_PUBLIC_BACKEND + "/generate/" + id
+      );
       setPasswordImage("data:image/png;base64," + (await _res.text()));
     };
 
