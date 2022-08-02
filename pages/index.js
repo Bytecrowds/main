@@ -59,7 +59,7 @@ const Home = () => {
           </ModalBody>
           <ModalFooter>
             <Text>
-              P.S.: The IP authentication currently doesn't work because vercel
+              P.S.: The IP authentication does not currently work because vercel
               lacks IPv6 support
             </Text>
           </ModalFooter>
