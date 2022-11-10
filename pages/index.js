@@ -66,21 +66,21 @@ const Home = () => {
         </ModalContent>
       </Modal>
       <Flex>
-        <Button color="brand">
-          <NextLink href="/about" passHref>
+        <NextLink href="/about" legacyBehavior passHref>
+          <Button color="brand">
             <Text fontSize="20px">
               <Link>about us</Link>
             </Text>
-          </NextLink>
-        </Button>
+          </Button>
+        </NextLink>
         <Spacer />
-        <Button color="brand">
-          <NextLink href="/contact" passHref>
+        <NextLink href="/contact" legacyBehavior passHref>
+          <Button color="brand">
             <Text fontSize="20px">
               <Link>contact</Link>
             </Text>
-          </NextLink>
-        </Button>
+          </Button>
+        </NextLink>
       </Flex>
       <Flex
         flexDirection="column"
