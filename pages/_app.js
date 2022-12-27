@@ -1,9 +1,10 @@
 import "../styles/globals.css";
+import { SessionProvider } from "next-auth/react";
 import { ChakraProvider } from "@chakra-ui/react";
 import { useEffect } from "react";
 import theme from "../theme";
 
-function MyApp({ Component, pageProps }) {
+function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   // Send the IP adress and current page to the analytics server.
   useEffect(() => {
     async function fetchAnalytics() {
@@ -28,9 +29,11 @@ function MyApp({ Component, pageProps }) {
   }, []);
 
   return (
-    <ChakraProvider theme={theme}>
-      <Component {...pageProps} />
-    </ChakraProvider>
+    <SessionProvider session={session}>
+      <ChakraProvider theme={theme}>
+        <Component {...pageProps} />
+      </ChakraProvider>
+    </SessionProvider>
   );
 }
 

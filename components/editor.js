@@ -3,15 +3,11 @@ import { useSyncedStore } from "@syncedstore/react";
 import CodeMirror from "@uiw/react-codemirror";
 import { oneDark } from "@codemirror/theme-one-dark";
 
-import { useDisclosure } from "@chakra-ui/react";
-import Auth from "./auth";
-import SignUp from "./signUp";
-
 import { yCollab, yUndoManagerKeymap } from "y-codemirror.next";
 import { keymap } from "@codemirror/view";
 
 import store from "../realtime/store";
-import { getAblyProvider } from "../realtime/store";
+import { setupAbly } from "../realtime/store";
 
 import { updateDB } from "../utils/db";
 import { langs, langOptions } from "../utils/language";
@@ -21,20 +17,7 @@ const Editor = ({
   editorInitialText,
   editorInitialLanguage,
   fetchFromDB,
-  requiresAuth,
 }) => {
-  // Controls the auth modal.
-  const { isOpen: isAuthOpen, onClose: onAuthClose } = useDisclosure({
-    defaultIsOpen: requiresAuth,
-  });
-
-  // Controls the sign up modal.
-  const {
-    isOpen: isSignUpOpen,
-    onOpen: onSignUpOpen,
-    onClose: onSignUpClose,
-  } = useDisclosure();
-
   const [editorLanguage, setEditorLanguage] = useState(
     langs[editorInitialLanguage]
   );
@@ -42,11 +25,9 @@ const Editor = ({
   const editorText = useSyncedStore(store).bytecrowdText;
 
   useEffect(() => {
-    // If the bytecrowd requires auth and the user is not logged in, open the modal.
-
     if (fetchFromDB) editorText.insert(0, editorInitialText);
     // Setup the Ably provider at first render to prevent spawning connections.
-    let ably = getAblyProvider(id);
+    setupAbly(id);
 
     // Every x seconds, store the current text in a variable.
     const interval = setInterval(() => {
@@ -63,20 +44,15 @@ const Editor = ({
 
   return (
     <>
-      <Auth isOpen={isAuthOpen} onClose={onAuthClose} id={id} />
-      <SignUp isOpen={isSignUpOpen} onClose={onSignUpClose} id={id} />
-      {!isAuthOpen && (
-        <CodeMirror
-          value={editorText.toString()}
-          theme={oneDark}
-          extensions={[
-            keymap.of([...yUndoManagerKeymap]),
-            editorLanguage,
-            yCollab(editorText),
-          ]}
-        />
-      )}
-
+      <CodeMirror
+        value={editorText.toString()}
+        theme={oneDark}
+        extensions={[
+          keymap.of([...yUndoManagerKeymap]),
+          editorLanguage,
+          yCollab(editorText),
+        ]}
+      />
       <div
         style={{
           position: "fixed",
@@ -111,18 +87,18 @@ const Editor = ({
             </option>
           ))}
         </select>
-        {!requiresAuth && (
+        {/*      
           <button
-            style={{
-              marginLeft: "15px",
-              color: "white",
-              backgroundColor: "black",
-            }}
-            onClick={onSignUpOpen}
-          >
-            set auth
-          </button>
-        )}
+          style={{
+            marginLeft: "15px",
+            color: "white",
+            backgroundColor: "black",
+          }}
+          onClick={onSignUpOpen}
+        >
+          set auth
+        </button>
+        */}
       </div>
     </>
   );
