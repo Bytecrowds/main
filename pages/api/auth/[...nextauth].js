@@ -1,11 +1,9 @@
 import NextAuth from "next-auth/next";
 import GithubProvider from "next-auth/providers/github";
-import { Redis } from "@upstash/redis";
+import redis from "../../../database/redis";
 import { UpstashRedisAdapter } from "@next-auth/upstash-redis-adapter";
 
-const redis = Redis.fromEnv();
-
-export default NextAuth({
+export const authOptions = {
   adapter: UpstashRedisAdapter(redis),
   providers: [
     GithubProvider({
@@ -13,4 +11,6 @@ export default NextAuth({
       clientSecret: process.env.GITHUB_CLIENT_SECRET,
     }),
   ],
-});
+};
+
+export default NextAuth(authOptions);
