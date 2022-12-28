@@ -5,7 +5,7 @@ import isAuthorized, { failAuthorization } from "../../utils/authorization";
 import success from "../../utils/approve";
 
 export default async (req, res) => {
-  const session = unstable_getServerSession(req, res, authOptions);
+  const session = await unstable_getServerSession(req, res, authOptions);
 
   if (!session) failAuthorization("login", res);
   else {
@@ -16,26 +16,24 @@ export default async (req, res) => {
     };
     const storedBytecrowd = await redis.hgetall("bytecrowd:" + name);
 
-    if (!isAuthorized(storedBytecrowd.authorizedEmails, session))
+    if (!storedBytecrowd) {
+      // If the bytecrowd doesn't exist, create it.
+      await redis.hset("bytecrowd:" + name, data);
+      success(res);
+    } else if (!isAuthorized(storedBytecrowd.authorizedEmails, session))
       failAuthorization("authorization", res);
     else {
-      if (!storedBytecrowd) {
-        // If the bytecrowd doesn't exist, create it.
-        await redis.hset("bytecrowd:" + name, data);
-        success(res);
-      } else {
-        if (
-          // If at least one element changed, update the bytecrowd.
-          JSON.stringify(storedBytecrowd) != JSON.stringify(data)
-        ) {
-          // If the request doesn't contain a new value for a field, use the current one.
-          for (let field in data)
-            if (!data[field]) data[field] = storedBytecrowd[field];
+      if (
+        // If at least one element changed, update the bytecrowd.
+        JSON.stringify(storedBytecrowd) != JSON.stringify(data)
+      ) {
+        // If the request doesn't contain a new value for a field, use the current one.
+        for (let field in data)
+          if (!data[field]) data[field] = storedBytecrowd[field];
 
-          await redis.hset("bytecrowd:" + name, data);
-        }
-        success(res);
+        await redis.hset("bytecrowd:" + name, data);
       }
+      success(res);
     }
   }
 };

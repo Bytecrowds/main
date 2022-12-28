@@ -9,21 +9,19 @@ export default async (req, res) => {
 
   if (!session) failAuthorization("login", res);
   else {
-    const { name } = req.body.name;
+    const { name } = req.body;
 
     if (await redis.hget("bytecrowd:" + name, "authorizedEmails"))
       failAuthorization("cannot update existing authorization", res);
     else {
-      const authorizedEmails = req.body.authorizedEmails.split(",");
+      const authorizedEmails = req.body?.authorizedEmails;
 
       if (!authorizedEmails || authorizedEmails.length === 0)
         res.status(400).send("authorizedEmails cannot be empty");
       else {
-        await redis.hset(
-          "bytecrowd:" + name,
-          "authorizedEmails",
-          authorizedEmails
-        );
+        await redis.hset("bytecrowd:" + name, {
+          authorizedEmails: authorizedEmails,
+        });
         success(res);
       }
     }

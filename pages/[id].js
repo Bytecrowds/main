@@ -2,6 +2,7 @@ import { useRouter } from "next/router";
 import { unstable_getServerSession } from "next-auth";
 import isAuthorized from "../utils/authorization";
 import { signIn } from "next-auth/react";
+import { authOptions } from "./api/auth/[...nextauth]";
 
 import dynamic from "next/dynamic";
 // Import the Editor client-side only to avoid initializing providers multiple times.
