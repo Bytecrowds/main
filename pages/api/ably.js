@@ -1,21 +1,24 @@
 import redis from "../../database/redis";
 import { unstable_getServerSession } from "next-auth";
 import { authOptions } from "./auth/[...nextauth]";
+import isAuthorized, { failAuthorization } from "../../utils/authorization";
+import success from "../../utils/approve";
 
 const Ably = require("ably");
 
 export default async (req, res) => {
   const session = await unstable_getServerSession(req, res, authOptions);
 
-  if (!session)
-    res.status(401).send("you need to be logged in to perform this operation");
+  if (!session) failAuthorization("login", res);
   else {
-    const channel = req.query.channel;
-    const authorizedEmails = await redis.hget(channel, "authorizedEmails");
-    if (authorizedEmails && !authorizedEmails.includes(session.user.email))
-      res
-        .status(401)
-        .send("you need to be authorized to perform this operation");
+    const { channel } = req.query;
+
+    const authorizedEmails = await redis.hget(
+      "bytecrowd:" + channel,
+      "authorizedEmails"
+    );
+    if (!isAuthorized(authorizedEmails, session))
+      failAuthorization("authorization", res);
     else {
       const ablyClient = new Ably.Rest({
         key: process.env.ABLY_API_KEY,
@@ -34,7 +37,7 @@ export default async (req, res) => {
         },
         null,
         (err, tokenRequest) => {
-          res.status(200).send(tokenRequest);
+          success(res, tokenRequest);
         }
       );
     }

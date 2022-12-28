@@ -1,30 +1,28 @@
 import redis from "../../database/redis";
 import { unstable_getServerSession } from "next-auth";
 import { authOptions } from "./auth/[...nextauth]";
-import isAuthorized from "../../utils/authorization";
+import isAuthorized, { failAuthorization } from "../../utils/authorization";
+import success from "../../utils/approve";
 
 export default async (req, res) => {
   const session = unstable_getServerSession(req, res, authOptions);
 
-  if (!session)
-    res.status(401).send("you need to be logged in to perform this operation");
+  if (!session) failAuthorization("login", res);
   else {
-    const name = req.body.name;
+    const { name } = req.body;
     let data = {
       text: req.body.text,
       language: req.body.language,
     };
     const storedBytecrowd = await redis.hgetall("bytecrowd:" + name);
 
-    if (!isAuthorized(bytecrowd))
-      res
-        .status(401)
-        .send("you need to be authorized to perform this operation");
+    if (!isAuthorized(storedBytecrowd.authorizedEmails, session))
+      failAuthorization("authorization", res);
     else {
       if (!storedBytecrowd) {
         // If the bytecrowd doesn't exist, create it.
-        await redis.hset(name, data);
-        res.status(200).send("ok");
+        await redis.hset("bytecrowd:" + name, data);
+        success(res);
       } else {
         if (
           // If at least one element changed, update the bytecrowd.
@@ -34,9 +32,9 @@ export default async (req, res) => {
           for (let field in data)
             if (!data[field]) data[field] = storedBytecrowd[field];
 
-          await redis.hset(name, data);
+          await redis.hset("bytecrowd:" + name, data);
         }
-        res.status(200).send("ok");
+        success(res);
       }
     }
   }
