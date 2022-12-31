@@ -18,22 +18,27 @@ export default async (req, res) => {
 
     if (!storedBytecrowd) {
       // If the bytecrowd doesn't exist, create it.
-      await redis.hset("bytecrowd:" + name, data);
+      await redis.hset("bytecrowd:" + name, {
+        text: data.text,
+        language: "javascript",
+      });
       success(res);
-    } else if (!isAuthorized(storedBytecrowd.authorizedEmails, session))
-      failAuthorization("authorization", res);
-    else {
-      if (
-        // If at least one element changed, update the bytecrowd.
-        JSON.stringify(storedBytecrowd) != JSON.stringify(data)
-      ) {
-        // If the request doesn't contain a new value for a field, use the current one.
-        for (let field in data)
-          if (!data[field]) data[field] = storedBytecrowd[field];
+    } else {
+      if (!isAuthorized(storedBytecrowd.authorizedEmails, session))
+        failAuthorization("authorization", res);
+      else {
+        if (
+          // If at least one element changed, update the bytecrowd.
+          JSON.stringify(storedBytecrowd) !== JSON.stringify(data)
+        ) {
+          // If the request doesn't contain a new value for a field, use the current one.
+          for (let field in data)
+            if (!data[field]) data[field] = storedBytecrowd[field];
 
-        await redis.hset("bytecrowd:" + name, data);
+          await redis.hset("bytecrowd:" + name, data);
+        }
+        success(res);
       }
-      success(res);
     }
   }
 };

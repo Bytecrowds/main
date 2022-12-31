@@ -9,8 +9,11 @@ import { keymap } from "@codemirror/view";
 import store from "../realtime/store";
 import { setupAbly } from "../realtime/store";
 
-import { updateDB } from "../utils/db";
+import { updateDB } from "../utils/database";
 import { langs, langOptions } from "../utils/language";
+
+import { useDisclosure } from "@chakra-ui/react";
+import AuthorizationModal from "./authorization";
 
 const Editor = ({
   id,
@@ -23,6 +26,8 @@ const Editor = ({
   );
   const [prevText, setPrevText] = useState(editorInitialText);
   const editorText = useSyncedStore(store).bytecrowdText;
+  // Control the authorization modal
+  const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
     if (fetchFromDB) editorText.insert(0, editorInitialText);
@@ -44,6 +49,7 @@ const Editor = ({
 
   return (
     <>
+      <AuthorizationModal isOpen={isOpen} onClose={onClose} id={id} />
       <CodeMirror
         value={editorText.toString()}
         theme={oneDark}
@@ -87,18 +93,16 @@ const Editor = ({
             </option>
           ))}
         </select>
-        {/*      
-          <button
+        <button
           style={{
             marginLeft: "15px",
             color: "white",
             backgroundColor: "black",
           }}
-          onClick={onSignUpOpen}
+          onClick={onOpen}
         >
           set auth
         </button>
-        */}
       </div>
     </>
   );

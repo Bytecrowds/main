@@ -1,6 +1,6 @@
 import redis from "../../database/redis";
 import { unstable_getServerSession } from "next-auth";
-import { authOptions } from "../api/auth/[...nextauth]";
+import { authOptions } from "./auth/[...nextauth]";
 import { failAuthorization } from "../../utils/authorization";
 import success from "../../utils/approve";
 
@@ -16,7 +16,10 @@ export default async (req, res) => {
     else {
       const authorizedEmails = req.body?.authorizedEmails;
 
-      if (!authorizedEmails || authorizedEmails.length === 0)
+      if (
+        !authorizedEmails ||
+        (authorizedEmails.length === 1 && authorizedEmails[0] === "")
+      )
         res.status(400).send("authorizedEmails cannot be empty");
       else {
         await redis.hset("bytecrowd:" + name, {

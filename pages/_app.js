@@ -17,13 +17,9 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
         // https://www.bytecrowds.com/abc => abc .
         page = document.URL.substring(27);
       if (page === "") page = "index";
-      await fetch(process.env.NEXT_PUBLIC_BACKEND + "/analytics", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ page: page }),
-      });
+      await fetch(
+        process.env.NEXT_PUBLIC_ANALYTICS_URL + "/analytics?page=" + page
+      );
     }
     fetchAnalytics();
   }, []);

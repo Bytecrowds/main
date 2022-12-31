@@ -11,7 +11,7 @@ export default async (req, res) => {
 
   if (!session) failAuthorization("login", res);
   else {
-    const { channel } = req.query;
+    const { channel } = req.body;
 
     const authorizedEmails = await redis.hget(
       "bytecrowd:" + channel,
