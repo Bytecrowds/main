@@ -7,26 +7,22 @@ import success from "../../utils/approve";
 export default async (req, res) => {
   const session = await unstable_getServerSession(req, res, authOptions);
 
-  if (!session) failAuthorization("login", res);
-  else {
-    const { name } = req.body;
+  if (!session) return failAuthorization("login", res);
 
-    if (await redis.hget("bytecrowd:" + name, "authorizedEmails"))
-      failAuthorization("cannot update existing authorization", res);
-    else {
-      const authorizedEmails = req.body?.authorizedEmails;
+  const { name } = req.body;
 
-      if (
-        !authorizedEmails ||
-        (authorizedEmails.length === 1 && authorizedEmails[0] === "")
-      )
-        res.status(400).send("authorizedEmails cannot be empty");
-      else {
-        await redis.hset("bytecrowd:" + name, {
-          authorizedEmails: authorizedEmails,
-        });
-        success(res);
-      }
-    }
-  }
+  if (await redis.hget("bytecrowd:" + name, "authorizedEmails"))
+    return failAuthorization("cannot update existing authorization", res);
+
+  const authorizedEmails = req.body?.authorizedEmails;
+  if (
+    !authorizedEmails ||
+    (authorizedEmails.length === 1 && authorizedEmails[0] === "")
+  )
+    return res.status(400).send("authorizedEmails cannot be empty");
+
+  await redis.hset("bytecrowd:" + name, {
+    authorizedEmails: authorizedEmails,
+  });
+  return success(res);
 };

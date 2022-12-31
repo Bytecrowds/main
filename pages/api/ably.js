@@ -9,37 +9,36 @@ const Ably = require("ably");
 export default async (req, res) => {
   const session = await unstable_getServerSession(req, res, authOptions);
 
-  if (!session) failAuthorization("login", res);
-  else {
-    const { channel } = req.body;
+  if (!session) return failAuthorization("login", res);
 
-    const authorizedEmails = await redis.hget(
-      "bytecrowd:" + channel,
-      "authorizedEmails"
-    );
-    if (!isAuthorized(authorizedEmails, session))
-      failAuthorization("authorization", res);
-    else {
-      const ablyClient = new Ably.Rest({
-        key: process.env.ABLY_API_KEY,
-      });
+  const { channel } = req.body;
 
-      let authorizationOptions = {};
-      authorizationOptions[channel] = ["subscribe", "publish", "presence"];
+  const authorizedEmails = await redis.hget(
+    "bytecrowd:" + channel,
+    "authorizedEmails"
+  );
 
-      ablyClient.auth.createTokenRequest(
-        {
-          clientId: Math.random()
-            .toString(36)
-            .replace(/[^a-z]+/g, "")
-            .substring(0, 7),
-          capability: JSON.stringify(authorizationOptions),
-        },
-        null,
-        (err, tokenRequest) => {
-          success(res, tokenRequest);
-        }
-      );
+  if (!isAuthorized(authorizedEmails, session))
+    return failAuthorization("authorization", res);
+
+  const ablyClient = new Ably.Rest({
+    key: process.env.ABLY_API_KEY,
+  });
+
+  let authorizationOptions = {};
+  authorizationOptions[channel] = ["subscribe", "publish", "presence"];
+
+  ablyClient.auth.createTokenRequest(
+    {
+      clientId: Math.random()
+        .toString(36)
+        .replace(/[^a-z]+/g, "")
+        .substring(0, 7),
+      capability: JSON.stringify(authorizationOptions),
+    },
+    null,
+    (err, tokenRequest) => {
+      return success(res, tokenRequest);
     }
-  }
+  );
 };
