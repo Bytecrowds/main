@@ -19,8 +19,6 @@ import {
 
 const Home = () => {
   const [randomLink, setRandomLink] = useState("/snippetzone");
-  // Set this to true when the hydration finished.
-  const [isMounted, setIsMounted] = useState(false);
 
   const { isOpen, onOpen, onClose } = useDisclosure();
 
@@ -32,7 +30,6 @@ const Home = () => {
           .replace(/[^a-z]+/g, "")
           .substring(0, 7)
     );
-    setIsMounted(true);
     if (localStorage.getItem("modalShown") !== "true") onOpen();
   }, []);
 
@@ -135,24 +132,22 @@ const Home = () => {
             &quot;the easy & quick way to share code with friends and teams.
             currently in beta&quot;
           </Text>
-          <Button
-            color="brand"
-            marginTop="75px"
-            width={{
-              xl: "450px",
-              lg: "450px",
-              md: "450px",
-            }}
-            height="90px"
-            fontSize="30px"
-            fontWeight="600"
-            onClick={() =>
-              // We don't have acces to window.location on the server.
-              isMounted ? (location.href = randomLink) : undefined
-            }
-          >
-            new bytecrowd
-          </Button>
+          <NextLink href={randomLink} passHref legacyBehavior>
+            <Button
+              color="brand"
+              marginTop="75px"
+              width={{
+                xl: "450px",
+                lg: "450px",
+                md: "450px",
+              }}
+              height="90px"
+              fontSize="30px"
+              fontWeight="600"
+            >
+              new bytecrowd
+            </Button>
+          </NextLink>
         </div>
         <Flex
           flexDirection="row"
