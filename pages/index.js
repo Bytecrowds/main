@@ -13,7 +13,6 @@ import {
   ModalOverlay,
   ModalBody,
   ModalHeader,
-  ModalFooter,
   ModalCloseButton,
 } from "@chakra-ui/react";
 
@@ -62,12 +61,6 @@ const Home = () => {
               browser.
             </Text>
           </ModalBody>
-          <ModalFooter>
-            <Text>
-              P.S.: The IP authentication does not currently work because vercel
-              lacks IPv6 support
-            </Text>
-          </ModalFooter>
         </ModalContent>
       </Modal>
       <Flex>
@@ -132,22 +125,24 @@ const Home = () => {
             &quot;the easy & quick way to share code with friends and teams.
             currently in beta&quot;
           </Text>
-          <NextLink href={randomLink} passHref legacyBehavior>
-            <Button
-              color="brand"
-              marginTop="75px"
-              width={{
-                xl: "450px",
-                lg: "450px",
-                md: "450px",
-              }}
-              height="90px"
-              fontSize="30px"
-              fontWeight="600"
-            >
-              new bytecrowd
-            </Button>
-          </NextLink>
+          <Button
+            // Use this instead of link to prevent caching
+            onClick={() => {
+              location.href = randomLink;
+            }}
+            color="brand"
+            marginTop="75px"
+            width={{
+              xl: "450px",
+              lg: "450px",
+              md: "450px",
+            }}
+            height="90px"
+            fontSize="30px"
+            fontWeight="600"
+          >
+            new bytecrowd
+          </Button>
         </div>
         <Flex
           flexDirection="row"
