@@ -5,16 +5,20 @@ import {
   Flex,
   Link,
   Spacer,
-  Text,
   Button,
   useDisclosure,
   Modal,
+  Text,
   ModalContent,
   ModalOverlay,
   ModalBody,
   ModalHeader,
   ModalCloseButton,
 } from "@chakra-ui/react";
+import { textGradientStyles } from "../theme";
+import StyledText from "../components/styled/text";
+import Image from "next/image";
+import logo from "../public/logo.png";
 
 const Home = () => {
   const [randomLink, setRandomLink] = useState("/snippetzone");
@@ -65,17 +69,17 @@ const Home = () => {
       </Modal>
       <Flex>
         <NextLink href="/about" legacyBehavior passHref>
-          <Button color="brand">
+          <Button>
             <Text fontSize="20px">
-              <Link>about us</Link>
+              <Link background="brand">about us</Link>
             </Text>
           </Button>
         </NextLink>
         <Spacer />
         <NextLink href="/contact" legacyBehavior passHref>
-          <Button color="brand">
+          <Button>
             <Text fontSize="20px">
-              <Link>contact</Link>
+              <Link background="brand">contact</Link>
             </Text>
           </Button>
         </NextLink>
@@ -98,6 +102,7 @@ const Home = () => {
       >
         <div>
           <Flex
+            alignItems="center"
             flexDirection={{
               base: "column",
               xl: "row",
@@ -116,10 +121,17 @@ const Home = () => {
               }}
               fontSize="65px"
               fontWeight="600"
-              color="brand"
+              background="brand"
+              style={textGradientStyles}
             >
               Bytecrowds
             </Text>
+            <Image
+              style={{ marginLeft: "50px" }}
+              src={logo}
+              alt="logo"
+              width="115"
+            />
           </Flex>
           <Text marginTop="20px" fontWeight="600" fontSize="35px">
             &quot;the easy & quick way to share code with friends and teams.
@@ -130,7 +142,6 @@ const Home = () => {
             onClick={() => {
               location.href = randomLink;
             }}
-            color="brand"
             marginTop="75px"
             width={{
               xl: "450px",
@@ -141,7 +152,7 @@ const Home = () => {
             fontSize="30px"
             fontWeight="600"
           >
-            new bytecrowd
+            <StyledText>new bytecrowd</StyledText>
           </Button>
         </div>
         <Flex
@@ -172,7 +183,7 @@ const Home = () => {
             by{" "}
             <Link
               href="https://www.linkedin.com/in/tudor-zg%C3%AEmb%C4%83u-a85274234/"
-              color="brand"
+              background="brand"
               isExternal
             >
               Tudor Zgîmbău
