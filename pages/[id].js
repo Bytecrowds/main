@@ -38,6 +38,7 @@ export async function getServerSideProps(context) {
         editorInitialLanguage: "javascript",
         fetchFromDB: fetchFromDB,
         login: "successful",
+        id: id,
       },
     };
 
