@@ -14,8 +14,8 @@ import {
   ModalBody,
   ModalHeader,
   ModalCloseButton,
+  Box,
 } from "@chakra-ui/react";
-import { textGradientStyles } from "../theme";
 import StyledText from "../components/styled/text";
 import Image from "next/image";
 import logo from "../public/logo.png";
@@ -122,7 +122,8 @@ const Home = () => {
               fontSize="65px"
               fontWeight="600"
               background="brand"
-              style={textGradientStyles}
+              backgroundClip="text"
+              fill="transparent"
             >
               Bytecrowds
             </Text>
@@ -155,41 +156,56 @@ const Home = () => {
             <StyledText>new bytecrowd</StyledText>
           </Button>
         </div>
-        <Flex
-          flexDirection="row"
-          width="400px"
+        <Box
           marginTop={{
             xl: "180px",
             lg: "180px",
             md: "180px",
             base: "50px",
           }}
-          justifyItems="center"
         >
-          <Text fontSize="14px" marginRight="10px">
-            developed in
-          </Text>
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width="20"
-            height="20"
-            viewBox="0 0 3 2"
-          >
-            <path fill="#002B7F" d="M0 0h3v2H0z" />
-            <path fill="#FCD116" d="M1 0h2v2H1z" />
-            <path fill="#CE1126" d="M2 0h1v2H2z" />
-          </svg>
-          <Text marginLeft="10px" fontSize="14px">
-            by{" "}
-            <Link
-              href="https://www.linkedin.com/in/tudor-zg%C3%AEmb%C4%83u-a85274234/"
-              background="brand"
-              isExternal
-            >
-              Tudor Zgîmbău
-            </Link>
-          </Text>
-        </Flex>
+          {[
+            {
+              title: "developed in",
+              author: "Tudor Zgîmbău",
+              link: "https://www.linkedin.com/in/tudor-zgîmbău-a85274234",
+            },
+            {
+              title: "logo",
+              author: "Luca Sainenco",
+              link: "https://github.com/LucaSain",
+            },
+          ].map((credit) => {
+            return (
+              <Flex
+                flexDirection="row"
+                width="400px"
+                justifyItems="center"
+                key={credit.author}
+              >
+                <Text fontSize="14px" marginRight="10px">
+                  {credit.title}
+                </Text>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  width="20"
+                  height="20"
+                  viewBox="0 0 3 2"
+                >
+                  <path fill="#002B7F" d="M0 0h3v2H0z" />
+                  <path fill="#FCD116" d="M1 0h2v2H1z" />
+                  <path fill="#CE1126" d="M2 0h1v2H2z" />
+                </svg>
+                <Text marginLeft="10px" fontSize="14px">
+                  by{" "}
+                  <Link href={credit.link} background="brand" isExternal>
+                    {credit.author}
+                  </Link>
+                </Text>
+              </Flex>
+            );
+          })}
+        </Box>
       </Flex>
     </>
   );

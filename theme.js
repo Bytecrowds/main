@@ -6,7 +6,7 @@ const config = {
   useSystemColorMode: false,
 };
 
-export const textGradientStyles = {
+const textGradientStyles = {
   WebkitBackgroundClip: "text !important",
   MozBackroundClip: "text !important",
   WebkitTextFillColor: "transparent !important",
