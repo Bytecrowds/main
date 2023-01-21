@@ -135,7 +135,7 @@ const Home = () => {
             />
           </Flex>
           <Text marginTop="20px" fontWeight="600" fontSize="35px">
-            &quot;the easy & quick way to share code with friends and teams.
+            &quot;an easy & quick way to share code with friends and teams,
             currently in beta&quot;
           </Text>
           <Button
@@ -183,20 +183,21 @@ const Home = () => {
                 justifyItems="center"
                 key={credit.author}
               >
-                <Text fontSize="14px" marginRight="10px">
-                  {credit.title}
-                </Text>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="20"
-                  height="20"
-                  viewBox="0 0 3 2"
-                >
-                  <path fill="#002B7F" d="M0 0h3v2H0z" />
-                  <path fill="#FCD116" d="M1 0h2v2H1z" />
-                  <path fill="#CE1126" d="M2 0h1v2H2z" />
-                </svg>
-                <Text marginLeft="10px" fontSize="14px">
+                <Text fontSize="16px">{credit.title}</Text>
+                {credit.title.includes("developed") && (
+                  <svg
+                    style={{ marginLeft: "10px", marginRight: "5px" }}
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="20"
+                    height="20"
+                    viewBox="0 0 3 2"
+                  >
+                    <path fill="#002B7F" d="M0 0h3v2H0z" />
+                    <path fill="#FCD116" d="M1 0h2v2H1z" />
+                    <path fill="#CE1126" d="M2 0h1v2H2z" />
+                  </svg>
+                )}
+                <Text fontSize="16px" marginLeft="5px">
                   by{" "}
                   <Link href={credit.link} background="brand" isExternal>
                     {credit.author}
@@ -205,6 +206,18 @@ const Home = () => {
               </Flex>
             );
           })}
+          <Flex flexDirection="row" width="400px" justifyItems="center">
+            <Text fontSize="16px">
+              check the source code on{" "}
+              <Link
+                href="https://github.com/Bytecrowds/bytecrowds"
+                background="brand"
+                isExternal
+              >
+                github
+              </Link>
+            </Text>
+          </Flex>
         </Box>
       </Flex>
     </>
