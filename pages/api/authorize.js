@@ -5,7 +5,7 @@ import success from "../../utils/approve";
 export default async (req, res) => {
   const { name } = req.body;
 
-  if (await redis.hget("bytecrowd:" + name, "authorizedEmails"))
+  if (await redis.hexists("bytecrowd:" + name, "authorizedEmails"))
     return failAuthorization("cannot update existing authorization", res);
 
   const authorizedEmails = req.body?.authorizedEmails;
