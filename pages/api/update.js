@@ -12,7 +12,7 @@ export default async (req, res) => {
     text: req.body.text,
     language: req.body.language,
   };
-  let storedBytecrowd = await redis.hgetall("bytecrowd:" + name);
+  const storedBytecrowd = await redis.hgetall("bytecrowd:" + name);
 
   if (!storedBytecrowd) {
     // If the bytecrowd doesn't exist, create it.
