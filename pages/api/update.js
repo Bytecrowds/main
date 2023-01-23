@@ -12,7 +12,7 @@ export default async (req, res) => {
     text: req.body.text,
     language: req.body.language,
   };
-  const storedBytecrowd = await redis.hgetall("bytecrowd:" + name);
+  let storedBytecrowd = await redis.hgetall("bytecrowd:" + name);
 
   if (!storedBytecrowd) {
     // If the bytecrowd doesn't exist, create it.
@@ -26,19 +26,19 @@ export default async (req, res) => {
   if (!isAuthorized(storedBytecrowd.authorizedEmails, session))
     return failAuthorization("authorization", res);
 
-  if (
-    // If at least one element changed, update the bytecrowd.
-    JSON.stringify(storedBytecrowd) !== JSON.stringify(data)
-  ) {
-    /* 
-       If the request doesn't contain a new value for a field, use the current one.
-       If the user deleted the code, the text field would be empty, so we need to check for that.
-    */
-    for (let field in data)
-      if (!data[field] && data[field] !== "")
-        data[field] = storedBytecrowd[field];
+  // If at least one element changed, update the bytecrowd.
+  for (const property in data)
+    if (data[property] && storedBytecrowd[property] !== data[property]) {
+      /* 
+        If the request doesn't contain a new value for a field, use the current one.
+        If the user deleted the code, the text field would be empty, so we need to check for that.
+      */
+      for (let field in data)
+        if (!data[field] && data[field] !== "")
+          data[field] = storedBytecrowd[field];
 
-    await redis.hset("bytecrowd:" + name, data);
-  }
+      await redis.hset("bytecrowd:" + name, data);
+      break;
+    }
   return success(res);
 };
