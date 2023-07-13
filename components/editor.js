@@ -40,11 +40,18 @@ const Editor = ({
     }, parseInt(process.env.NEXT_PUBLIC_UPDATE_INTERVAL));
     // Clear the interval to prevent memory leaks and duplication.
     return () => clearInterval(interval);
+    // Only run this once.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     // If the text changed, update the DB.
     updateDB({ name: id, text: editorText.toString() });
+    /*
+      The update-after-delay logic relies on following the text snapshot,
+      no the actual editorText. id is a prop.
+    */
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [prevText]);
 
   return (
