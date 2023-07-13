@@ -3,8 +3,10 @@
 import redis from "../../database/redis";
 import { unstable_getServerSession } from "next-auth";
 import { authOptions } from "./auth/[...nextauth]";
-import isAuthorized, { failAuthorization } from "../../utils/authorization";
-import success from "../../utils/approve";
+import isAuthorized, {
+  failAuthorization,
+} from "../../server-functions/authorization";
+import success from "../../utils/server/approve";
 
 const Ably = require("ably");
 

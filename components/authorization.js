@@ -9,7 +9,7 @@ import {
   ModalOverlay,
 } from "@chakra-ui/react";
 import { useRef } from "react";
-import { authorize } from "../utils/authorization";
+import { authorize } from "../server-functions/authorization";
 import StyledText from "./styled/text";
 
 const AuthorizationModal = ({ isOpen, onClose, id }) => {

@@ -9,8 +9,8 @@ import { keymap } from "@codemirror/view";
 import store from "../realtime/store";
 import { setupAbly } from "../realtime/store";
 
-import { updateDB } from "../utils/database";
-import { langs, langOptions } from "../utils/language";
+import { updateDB } from "../server-functions/database";
+import { langs, langOptions } from "../utils/client/language";
 
 import { useDisclosure } from "@chakra-ui/react";
 import AuthorizationModal from "./authorization";

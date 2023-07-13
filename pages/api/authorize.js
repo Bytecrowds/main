@@ -1,8 +1,8 @@
 /* eslint-disable import/no-anonymous-default-export */
 
 import redis from "../../database/redis";
-import { failAuthorization } from "../../utils/authorization";
-import success from "../../utils/approve";
+import { failAuthorization } from "../../server-functions/authorization";
+import success from "../../utils/server/approve";
 
 export default async (req, res) => {
   const { name } = req.body;
