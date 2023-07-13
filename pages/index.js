@@ -34,6 +34,7 @@ const Home = () => {
           .substring(0, 7)
     );
     if (localStorage.getItem("modalShown") !== "true") onOpen();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

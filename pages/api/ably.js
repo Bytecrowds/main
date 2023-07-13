@@ -1,3 +1,5 @@
+/* eslint-disable import/no-anonymous-default-export */
+
 import redis from "../../database/redis";
 import { unstable_getServerSession } from "next-auth";
 import { authOptions } from "./auth/[...nextauth]";

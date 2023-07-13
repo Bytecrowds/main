@@ -1,3 +1,5 @@
+/* eslint-disable import/no-anonymous-default-export */
+
 import redis from "../../database/redis";
 import { unstable_getServerSession } from "next-auth";
 import { authOptions } from "./auth/[...nextauth]";
@@ -28,7 +30,10 @@ export default async (req, res) => {
 
   // If at least one element changed, update the bytecrowd.
   for (const property in data)
-    if (data[property] !== undefined && storedBytecrowd[property] !== data[property]) {
+    if (
+      data[property] !== undefined &&
+      storedBytecrowd[property] !== data[property]
+    ) {
       /* 
         If the request doesn't contain a new value for a field, use the current one.
         If the user deleted the code, the text field would be empty, so we need to check for that.
