@@ -1,6 +1,8 @@
 import { ColorModeScript } from "@chakra-ui/react";
-import { Html, Head, Main, NextScript } from "next/document";
+
 import theme from "../theme";
+
+import { Html, Head, Main, NextScript } from "next/document";
 
 export default function Document() {
   // Inject the ChakraUI color script into the server-side rendered HTML.

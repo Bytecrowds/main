@@ -8,9 +8,11 @@ import {
   ModalHeader,
   ModalOverlay,
 } from "@chakra-ui/react";
-import { useRef } from "react";
-import { authorize } from "../server-functions/authorization";
 import StyledText from "./styled/text";
+
+import { useRef } from "react";
+
+import { authorize } from "../server-functions/authorization";
 
 const AuthorizationModal = ({ isOpen, onClose, id }) => {
   const inputRef = useRef(null);

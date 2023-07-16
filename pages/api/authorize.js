@@ -1,6 +1,7 @@
 /* eslint-disable import/no-anonymous-default-export */
 
 import redis from "../../database/redis";
+
 import { failAuthorization } from "../../utils/server/authorization";
 import success from "../../utils/server/approve";
 

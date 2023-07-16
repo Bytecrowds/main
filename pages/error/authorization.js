@@ -1,6 +1,8 @@
 import { unstable_getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]";
 import { useSession } from "next-auth/react";
+import { signIn, signOut } from "next-auth/react";
+
 import {
   Card,
   CardHeader,
@@ -8,7 +10,6 @@ import {
   CardFooter,
   Button,
 } from "@chakra-ui/react";
-import { signIn, signOut } from "next-auth/react";
 import StyledText from "../../components/styled/text";
 
 // Use SSR to prevent loading handling on client.

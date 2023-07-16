@@ -1,4 +1,5 @@
 import { Redis } from "@upstash/redis";
+
 import https from "http";
 
 // Reuse the connection if the backend function is still hot.

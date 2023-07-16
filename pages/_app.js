@@ -1,5 +1,7 @@
 import "../styles/globals.css";
+
 import { SessionProvider } from "next-auth/react";
+
 import {
   ChakraProvider,
   useDisclosure,
@@ -11,8 +13,11 @@ import {
   ModalHeader,
   ModalCloseButton,
 } from "@chakra-ui/react";
-import { useEffect } from "react";
+
 import theme from "../theme";
+
+import { useEffect } from "react";
+
 import LogRocket from "logrocket";
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {

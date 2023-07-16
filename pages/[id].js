@@ -1,6 +1,7 @@
 import { unstable_getServerSession } from "next-auth";
 import { isAuthorized } from "../utils/server/authorization";
 import { authOptions } from "./api/auth/[...nextauth]";
+
 import redis from "../database/redis";
 
 import dynamic from "next/dynamic";

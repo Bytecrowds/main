@@ -1,8 +1,11 @@
 import Head from "next/head";
 import NextLink from "next/link";
+
 import { useState, useEffect } from "react";
 import { Flex, Link, Spacer, Button, Text, Box } from "@chakra-ui/react";
+
 import StyledText from "../components/styled/text";
+
 import Image from "next/image";
 import logo from "../public/logo.png";
 
