@@ -7,7 +7,7 @@ import success from "../../utils/server/approve";
 export default async (req, res) => {
   const { name } = req.body;
 
-  if (await redis.hexists("bytecrowd:" + name, "authorizedEmails"))
+  if (await redis.hexists(`bytecrowd:${name}`, "authorizedEmails"))
     return failAuthorization("cannot update existing authorization", res);
 
   const emails = req.body?.emails;
@@ -21,7 +21,7 @@ export default async (req, res) => {
     if (!email.match(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/))
       return res.status(400).send(`invalid email: ${email}`);
 
-  await redis.hset("bytecrowd:" + name, {
+  await redis.hset(`bytecrowd:${name}`, {
     authorizedEmails: emails,
   });
   return success(res);

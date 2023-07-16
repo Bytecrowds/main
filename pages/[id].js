@@ -13,13 +13,14 @@ export async function getServerSideProps({ req, res, query }) {
   const session = await unstable_getServerSession(req, res, authOptions);
   const { id } = query;
 
-  const bytecrowd = await redis.hgetall("bytecrowd:" + id);
+  const bytecrowd = await redis.hgetall(`bytecrowd:${id}`);
   const presenceResponse = await fetch(
-    "https://rest.ably.io/channels/" + id + "/presence",
+    `https://rest.ably.io/channels/${id}/presence`,
     {
       headers: {
-        Authorization:
-          "Basic " + Buffer.from(process.env.ABLY_API_KEY).toString("base64"),
+        Authorization: `Basic ${Buffer.from(process.env.ABLY_API_KEY).toString(
+          "base64"
+        )}`,
       },
     }
   );
@@ -46,7 +47,7 @@ export async function getServerSideProps({ req, res, query }) {
   if (!isAuthorized(bytecrowd.authorizedEmails, session))
     return {
       redirect: {
-        destination: "/error/authorization?page=" + id,
+        destination: `/error/authorization?page=${id}`,
         permanent: false,
       },
     };

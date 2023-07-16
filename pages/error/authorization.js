@@ -63,7 +63,7 @@ const Error = ({ page }) => {
             <Button
               variant="ghost"
               fontSize="xl"
-              onClick={() => signIn("github", { callbackUrl: "/" + page })}
+              onClick={() => signIn("github", { callbackUrl: `/${page}` })}
             >
               <StyledText>sign in</StyledText>
             </Button>

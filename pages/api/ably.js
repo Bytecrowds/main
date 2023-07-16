@@ -17,7 +17,7 @@ export default async (req, res) => {
   const { channel } = req.body;
 
   const authorizedEmails = await redis.hget(
-    "bytecrowd:" + channel,
+    `bytecrowd:${channel}`,
     "authorizedEmails"
   );
 

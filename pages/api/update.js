@@ -17,11 +17,11 @@ export default async (req, res) => {
     text: req.body.text,
     language: req.body.language,
   };
-  const storedBytecrowd = await redis.hgetall("bytecrowd:" + name);
+  const storedBytecrowd = await redis.hgetall(`bytecrowd:${name}`);
 
   if (!storedBytecrowd) {
     // If the bytecrowd doesn't exist, create it.
-    await redis.hset("bytecrowd:" + name, {
+    await redis.hset(`bytecrowd:${name}`, {
       text: data.text,
       language: "javascript",
     });
@@ -45,7 +45,7 @@ export default async (req, res) => {
         if (!data[field] && data[field] !== "")
           data[field] = storedBytecrowd[field];
 
-      await redis.hset("bytecrowd:" + name, data);
+      await redis.hset(`bytecrowd:${name}`, data);
       break;
     }
   return success(res);

@@ -37,12 +37,12 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
         page = document.URL.substring(27);
       if (page === "") page = "index";
       await fetch(
-        process.env.NEXT_PUBLIC_ANALYTICS_URL + "/analytics?page=" + page
+        `${process.env.NEXT_PUBLIC_ANALYTICS_URL}/analytics?page=${page}`
       );
     }
     fetchAnalytics();
 
-    // triggered by "onOpen"
+    // Triggered by "onOpen".
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 

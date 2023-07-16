@@ -11,11 +11,10 @@ const Home = () => {
 
   useEffect(() => {
     setRandomLink(
-      "/" +
-        Math.random()
-          .toString(36)
-          .replace(/[^a-z]+/g, "")
-          .substring(0, 7)
+      `/${Math.random()
+        .toString(36)
+        .replace(/[^a-z]+/g, "")
+        .substring(0, 7)}`
     );
   }, []);
 
