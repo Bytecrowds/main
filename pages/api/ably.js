@@ -1,8 +1,14 @@
+/* eslint-disable import/no-anonymous-default-export */
+
 import redis from "../../database/redis";
 import { unstable_getServerSession } from "next-auth";
 import { authOptions } from "./auth/[...nextauth]";
-import isAuthorized, { failAuthorization } from "../../utils/authorization";
-import success from "../../utils/approve";
+
+import {
+  isAuthorized,
+  failAuthorization,
+} from "../../utils/server/authorization";
+import success from "../../utils/server/approve";
 
 const Ably = require("ably");
 
@@ -12,7 +18,7 @@ export default async (req, res) => {
   const { channel } = req.body;
 
   const authorizedEmails = await redis.hget(
-    "bytecrowd:" + channel,
+    `bytecrowd:${channel}`,
     "authorizedEmails"
   );
 
@@ -23,8 +29,10 @@ export default async (req, res) => {
     key: process.env.ABLY_API_KEY,
   });
 
-  let authorizationOptions = {};
-  authorizationOptions[channel] = ["subscribe", "publish", "presence"];
+  let authorizationOptions = {
+    // https://stackoverflow.com/questions/5640988/how-do-i-interpolate-a-variable-as-a-key-in-a-javascript-object/30608422#30608422
+    [channel]: ["subscribe", "publish", "presence"],
+  };
 
   ablyClient.auth.createTokenRequest(
     {

@@ -9,8 +9,8 @@ import { keymap } from "@codemirror/view";
 import store from "../realtime/store";
 import { setupAbly } from "../realtime/store";
 
-import { updateDB } from "../utils/database";
-import { langs, langOptions } from "../utils/language";
+import { updateBytecrowd } from "../server-functions/database";
+import { langs, langOptions } from "../utils/client/language";
 
 import { useDisclosure } from "@chakra-ui/react";
 import AuthorizationModal from "./authorization";
@@ -19,18 +19,19 @@ const Editor = ({
   id,
   editorInitialText,
   editorInitialLanguage,
-  fetchFromDB,
+  insertInitialTextFromDatabase,
 }) => {
   const [editorLanguage, setEditorLanguage] = useState(
     langs[editorInitialLanguage]
   );
   const [prevText, setPrevText] = useState(editorInitialText);
   const editorText = useSyncedStore(store).bytecrowdText;
+
   // Control the authorization modal
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
-    if (fetchFromDB) editorText.insert(0, editorInitialText);
+    if (insertInitialTextFromDatabase) editorText.insert(0, editorInitialText);
     // Setup the Ably provider at first render to prevent spawning connections.
     setupAbly(id);
 
@@ -40,11 +41,18 @@ const Editor = ({
     }, parseInt(process.env.NEXT_PUBLIC_UPDATE_INTERVAL));
     // Clear the interval to prevent memory leaks and duplication.
     return () => clearInterval(interval);
+    // Only run this once.
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     // If the text changed, update the DB.
-    updateDB({ name: id, text: editorText.toString() });
+    updateBytecrowd({ name: id, text: editorText.toString() });
+    /*
+      The update-after-delay logic relies on following the text snapshot,
+      no the actual editorText. id is a prop.
+    */
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [prevText]);
 
   return (
@@ -78,7 +86,7 @@ const Editor = ({
           defaultValue={editorInitialLanguage}
           onChange={(e) => {
             setEditorLanguage(langs[e.target.value]);
-            updateDB({
+            updateBytecrowd({
               name: id,
               language: e.target.value.toString(),
             });

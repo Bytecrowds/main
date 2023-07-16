@@ -8,9 +8,11 @@ import {
   ModalHeader,
   ModalOverlay,
 } from "@chakra-ui/react";
-import { useRef } from "react";
-import { authorize } from "../utils/authorization";
 import StyledText from "./styled/text";
+
+import { useRef } from "react";
+
+import { authorize } from "../server-functions/authorization";
 
 const AuthorizationModal = ({ isOpen, onClose, id }) => {
   const inputRef = useRef(null);
@@ -22,9 +24,20 @@ const AuthorizationModal = ({ isOpen, onClose, id }) => {
   const submit = async () => {
     const emails = inputRef.current.value.replaceAll(" ", "").split(",");
 
+    // Regex from https://www.scaler.com/topics/email-validation-in-javascript/
+    for (const email of emails)
+      if (!email.match(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/)) {
+        alert(`invalid email: ${email}`);
+        return;
+      }
+
     let response = await authorize(id, emails);
 
-    if (response.status !== 200) alert(await response.text());
+    if (response.status !== 200) {
+      alert(await response.text());
+      return;
+    }
+
     // Close the modal.
     onClose();
   };

@@ -1,8 +1,15 @@
+/* eslint-disable import/no-anonymous-default-export */
+
 import redis from "../../database/redis";
+
 import { unstable_getServerSession } from "next-auth";
 import { authOptions } from "./auth/[...nextauth]";
-import isAuthorized, { failAuthorization } from "../../utils/authorization";
-import success from "../../utils/approve";
+
+import {
+  isAuthorized,
+  failAuthorization,
+} from "../../utils/server/authorization";
+import success from "../../utils/server/approve";
 
 export default async (req, res) => {
   const session = await unstable_getServerSession(req, res, authOptions);
@@ -12,11 +19,11 @@ export default async (req, res) => {
     text: req.body.text,
     language: req.body.language,
   };
-  const storedBytecrowd = await redis.hgetall("bytecrowd:" + name);
+  const storedBytecrowd = await redis.hgetall(`bytecrowd:${name}`);
 
   if (!storedBytecrowd) {
     // If the bytecrowd doesn't exist, create it.
-    await redis.hset("bytecrowd:" + name, {
+    await redis.hset(`bytecrowd:${name}`, {
       text: data.text,
       language: "javascript",
     });
@@ -28,16 +35,19 @@ export default async (req, res) => {
 
   // If at least one element changed, update the bytecrowd.
   for (const property in data)
-    if (data[property] !== undefined && storedBytecrowd[property] !== data[property]) {
+    if (
+      data[property] !== undefined &&
+      storedBytecrowd[property] !== data[property]
+    ) {
       /* 
         If the request doesn't contain a new value for a field, use the current one.
         If the user deleted the code, the text field would be empty, so we need to check for that.
       */
-      for (let field in data)
+      for (const field in data)
         if (!data[field] && data[field] !== "")
           data[field] = storedBytecrowd[field];
 
-      await redis.hset("bytecrowd:" + name, data);
+      await redis.hset(`bytecrowd:${name}`, data);
       break;
     }
   return success(res);

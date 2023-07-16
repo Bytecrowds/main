@@ -1,4 +1,4 @@
-export const updateDB = (payload) => {
+export const updateBytecrowd = (payload) => {
   fetch("/api/update", {
     method: "POST",
     headers: {

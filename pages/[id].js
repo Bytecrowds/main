@@ -1,6 +1,7 @@
 import { unstable_getServerSession } from "next-auth";
-import isAuthorized from "../utils/authorization";
+import { isAuthorized } from "../utils/server/authorization";
 import { authOptions } from "./api/auth/[...nextauth]";
+
 import redis from "../database/redis";
 
 import dynamic from "next/dynamic";
@@ -9,26 +10,27 @@ const Editor = dynamic(() => import("../components/editor"), {
   ssr: false,
 });
 
-export async function getServerSideProps(context) {
-  const { req, res, query } = context;
+export async function getServerSideProps({ req, res, query }) {
   const session = await unstable_getServerSession(req, res, authOptions);
   const { id } = query;
 
-  const bytecrowd = await redis.hgetall("bytecrowd:" + id);
+  const bytecrowd = await redis.hgetall(`bytecrowd:${id}`);
   const presenceResponse = await fetch(
-    "https://rest.ably.io/channels/" + id + "/presence",
+    `https://rest.ably.io/channels/${id}/presence`,
     {
       headers: {
-        Authorization:
-          "Basic " + Buffer.from(process.env.ABLY_API_KEY).toString("base64"),
+        Authorization: `Basic ${Buffer.from(process.env.ABLY_API_KEY).toString(
+          "base64"
+        )}`,
       },
     }
   );
   /*
-    If there are no other connected peers, the document will be fetched from the DB.
-    Otherwise, fetch the document from peers.
+    If there are no other connected peers, the text will be inserted from the database.
+    Otherwise, it will be fetched from peers.
    */
-  const fetchFromDB = (await presenceResponse.json()).length === 0;
+  const insertInitialTextFromDatabase =
+    (await presenceResponse.json()).length === 0;
 
   // If the bytecrowd doesn't exist, return the default values.
   if (!bytecrowd)
@@ -36,17 +38,17 @@ export async function getServerSideProps(context) {
       props: {
         editorInitialText: "",
         editorInitialLanguage: "javascript",
-        fetchFromDB: fetchFromDB,
+        insertInitialTextFromDatabase: insertInitialTextFromDatabase,
         login: "successful",
         id: id,
       },
     };
 
-  // Checked if the user is authorized.
+  // Check if the user is authorized.
   if (!isAuthorized(bytecrowd.authorizedEmails, session))
     return {
       redirect: {
-        destination: "/error/authorization?page=" + id,
+        destination: `/error/authorization?page=${id}`,
         permanent: false,
       },
     };
@@ -55,7 +57,7 @@ export async function getServerSideProps(context) {
     props: {
       editorInitialText: bytecrowd.text,
       editorInitialLanguage: bytecrowd.language,
-      fetchFromDB: fetchFromDB,
+      insertInitialTextFromDatabase: insertInitialTextFromDatabase,
       id: id,
     },
   };
@@ -64,7 +66,7 @@ export async function getServerSideProps(context) {
 const Bytecrowd = ({
   editorInitialText,
   editorInitialLanguage,
-  fetchFromDB,
+  insertInitialTextFromDatabase,
   id,
 }) => {
   return (
@@ -72,7 +74,7 @@ const Bytecrowd = ({
       id={id}
       editorInitialText={editorInitialText}
       editorInitialLanguage={editorInitialLanguage}
-      fetchFromDB={fetchFromDB}
+      insertInitialTextFromDatabase={insertInitialTextFromDatabase}
     />
   );
 };

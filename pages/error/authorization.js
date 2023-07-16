@@ -1,6 +1,8 @@
 import { unstable_getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]";
 import { useSession } from "next-auth/react";
+import { signIn, signOut } from "next-auth/react";
+
 import {
   Card,
   CardHeader,
@@ -8,13 +10,10 @@ import {
   CardFooter,
   Button,
 } from "@chakra-ui/react";
-import { signIn, signOut } from "next-auth/react";
 import StyledText from "../../components/styled/text";
 
 // Use SSR to prevent loading handling on client.
-export async function getServerSideProps(context) {
-  const { req, res, query } = context;
-
+export async function getServerSideProps({ req, res, query }) {
   return {
     props: {
       session: await unstable_getServerSession(req, res, authOptions),
@@ -25,6 +24,7 @@ export async function getServerSideProps(context) {
 
 const Error = ({ page }) => {
   const { data: session } = useSession();
+
   return (
     <div
       style={{
@@ -64,7 +64,7 @@ const Error = ({ page }) => {
             <Button
               variant="ghost"
               fontSize="xl"
-              onClick={() => signIn("github", { callbackUrl: "/" + page })}
+              onClick={() => signIn("github", { callbackUrl: `/${page}` })}
             >
               <StyledText>sign in</StyledText>
             </Button>

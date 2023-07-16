@@ -1,6 +1,7 @@
-import { getYjsValue } from "@syncedstore/core";
-import * as Y from "yjs";
 import store from "./store";
+import { getYjsValue } from "@syncedstore/core";
+
+import * as Y from "yjs";
 
 export default class AblyProvider {
   constructor(client, channel) {

@@ -1,7 +1,8 @@
 import NextAuth from "next-auth/next";
 import GithubProvider from "next-auth/providers/github";
-import redis from "../../../database/redis";
+
 import { UpstashRedisAdapter } from "@next-auth/upstash-redis-adapter";
+import redis from "../../../database/redis";
 
 export const authOptions = {
   adapter: UpstashRedisAdapter(redis),
