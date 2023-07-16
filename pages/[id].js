@@ -24,10 +24,11 @@ export async function getServerSideProps({ req, res, query }) {
     }
   );
   /*
-    If there are no other connected peers, the document will be fetched from the DB.
-    Otherwise, fetch the document from peers.
+    If there are no other connected peers, the text will be inserted from the database.
+    Otherwise, it will be fetched from peers.
    */
-  const fetchFromDB = (await presenceResponse.json()).length === 0;
+  const insertInitialTextFromDatabase =
+    (await presenceResponse.json()).length === 0;
 
   // If the bytecrowd doesn't exist, return the default values.
   if (!bytecrowd)
@@ -35,13 +36,13 @@ export async function getServerSideProps({ req, res, query }) {
       props: {
         editorInitialText: "",
         editorInitialLanguage: "javascript",
-        fetchFromDB: fetchFromDB,
+        insertInitialTextFromDatabase: insertInitialTextFromDatabase,
         login: "successful",
         id: id,
       },
     };
 
-  // Checked if the user is authorized.
+  // Check if the user is authorized.
   if (!isAuthorized(bytecrowd.authorizedEmails, session))
     return {
       redirect: {
@@ -54,7 +55,7 @@ export async function getServerSideProps({ req, res, query }) {
     props: {
       editorInitialText: bytecrowd.text,
       editorInitialLanguage: bytecrowd.language,
-      fetchFromDB: fetchFromDB,
+      insertInitialTextFromDatabase: insertInitialTextFromDatabase,
       id: id,
     },
   };
@@ -63,7 +64,7 @@ export async function getServerSideProps({ req, res, query }) {
 const Bytecrowd = ({
   editorInitialText,
   editorInitialLanguage,
-  fetchFromDB,
+  insertInitialTextFromDatabase,
   id,
 }) => {
   return (
@@ -71,7 +72,7 @@ const Bytecrowd = ({
       id={id}
       editorInitialText={editorInitialText}
       editorInitialLanguage={editorInitialLanguage}
-      fetchFromDB={fetchFromDB}
+      insertInitialTextFromDatabase={insertInitialTextFromDatabase}
     />
   );
 };
