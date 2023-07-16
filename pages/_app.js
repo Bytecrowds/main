@@ -1,13 +1,29 @@
 import "../styles/globals.css";
 import { SessionProvider } from "next-auth/react";
-import { ChakraProvider } from "@chakra-ui/react";
+import {
+  ChakraProvider,
+  useDisclosure,
+  Modal,
+  Text,
+  ModalContent,
+  ModalOverlay,
+  ModalBody,
+  ModalHeader,
+  ModalCloseButton,
+} from "@chakra-ui/react";
 import { useEffect } from "react";
 import theme from "../theme";
 import LogRocket from "logrocket";
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }) {
+  // Controls the analytics info modal.
+  const { isOpen, onOpen, onClose } = useDisclosure();
+
   useEffect(() => {
     LogRocket.init("ptmrhf/bytecrowds");
+
+    // Analytics info.
+    if (localStorage.getItem("modalShown") !== "true") onOpen();
 
     // Send the IP adress and current page to the analytics server.
     async function fetchAnalytics() {
@@ -25,11 +41,36 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
       );
     }
     fetchAnalytics();
+
+    // triggered by "onOpen"
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <SessionProvider session={session}>
       <ChakraProvider theme={theme}>
+        <Modal
+          isOpen={isOpen}
+          onClose={() => {
+            localStorage.setItem("modalShown", "true");
+            onClose();
+          }}
+        >
+          <ModalOverlay />
+          <ModalContent>
+            <ModalHeader>Please read!</ModalHeader>
+            <ModalCloseButton />
+            <ModalBody>
+              <Text>
+                This website loggs essential analytics data such as IP addresses
+                and pages data. The data is not selled or used for
+                indentification. To request the deletion of your data mail me at
+                tudor.zgimbau@gmail.com. This pop-up should appear only once per
+                browser.
+              </Text>
+            </ModalBody>
+          </ModalContent>
+        </Modal>
         <Component {...pageProps} />
       </ChakraProvider>
     </SessionProvider>

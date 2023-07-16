@@ -1,29 +1,13 @@
 import Head from "next/head";
 import NextLink from "next/link";
 import { useState, useEffect } from "react";
-import {
-  Flex,
-  Link,
-  Spacer,
-  Button,
-  useDisclosure,
-  Modal,
-  Text,
-  ModalContent,
-  ModalOverlay,
-  ModalBody,
-  ModalHeader,
-  ModalCloseButton,
-  Box,
-} from "@chakra-ui/react";
+import { Flex, Link, Spacer, Button, Text, Box } from "@chakra-ui/react";
 import StyledText from "../components/styled/text";
 import Image from "next/image";
 import logo from "../public/logo.png";
 
 const Home = () => {
   const [randomLink, setRandomLink] = useState("/snippetzone");
-
-  const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
     setRandomLink(
@@ -33,8 +17,6 @@ const Home = () => {
           .replace(/[^a-z]+/g, "")
           .substring(0, 7)
     );
-    if (localStorage.getItem("modalShown") !== "true") onOpen();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
@@ -46,28 +28,6 @@ const Home = () => {
           content="width=device-width, initial-scale=1"
         ></meta>
       </Head>
-      <Modal
-        isOpen={isOpen}
-        onClose={() => {
-          localStorage.setItem("modalShown", "true");
-          onClose();
-        }}
-      >
-        <ModalOverlay />
-        <ModalContent>
-          <ModalHeader>Please read!</ModalHeader>
-          <ModalCloseButton />
-          <ModalBody>
-            <Text>
-              This website loggs essential analytics data such as IP addresses
-              and pages data. The data is NOT selled or used for
-              indentification. To request the deletion of your data mail me at
-              tudor.zgimbau@gmail.com. This pop-up should appear only once per
-              browser.
-            </Text>
-          </ModalBody>
-        </ModalContent>
-      </Modal>
       <Flex>
         <NextLink href="/about" legacyBehavior passHref>
           <Button>
@@ -209,13 +169,13 @@ const Home = () => {
           })}
           <Flex flexDirection="row" width="400px" justifyItems="center">
             <Text fontSize="16px">
-              check the source code on{" "}
+              Check the source code on{" "}
               <Link
                 href="https://github.com/Bytecrowds/bytecrowds"
                 background="brand"
                 isExternal
               >
-                github
+                GitHub
               </Link>
             </Text>
           </Flex>
