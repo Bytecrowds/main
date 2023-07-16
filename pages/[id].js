@@ -1,5 +1,5 @@
 import { unstable_getServerSession } from "next-auth";
-import isAuthorized from "../server-functions/authorization";
+import { isAuthorized } from "../utils/server/authorization";
 import { authOptions } from "./api/auth/[...nextauth]";
 import redis from "../database/redis";
 

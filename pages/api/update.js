@@ -3,9 +3,10 @@
 import redis from "../../database/redis";
 import { unstable_getServerSession } from "next-auth";
 import { authOptions } from "./auth/[...nextauth]";
-import isAuthorized, {
+import {
+  isAuthorized,
   failAuthorization,
-} from "../../server-functions/authorization";
+} from "../../utils/server/authorization";
 import success from "../../utils/server/approve";
 
 export default async (req, res) => {
