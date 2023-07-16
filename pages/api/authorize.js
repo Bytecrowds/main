@@ -10,15 +10,19 @@ export default async (req, res) => {
   if (await redis.hexists("bytecrowd:" + name, "authorizedEmails"))
     return failAuthorization("cannot update existing authorization", res);
 
-  const authorizedEmails = req.body?.authorizedEmails;
-  if (
-    !authorizedEmails ||
-    (authorizedEmails.length === 1 && authorizedEmails[0] === "")
-  )
-    return res.status(400).send("authorizedEmails cannot be empty");
+  const emails = req.body?.emails;
+  if (!emails || (emails.length === 1 && emails[0] === ""))
+    return res
+      .status(400)
+      .send("The list of authorized emails cannot be empty");
+
+  // Regex from https://www.scaler.com/topics/email-validation-in-javascript/
+  for (const email of emails)
+    if (!email.match(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/))
+      return res.status(400).send(`invalid email: ${email}`);
 
   await redis.hset("bytecrowd:" + name, {
-    authorizedEmails: authorizedEmails,
+    authorizedEmails: emails,
   });
   return success(res);
 };

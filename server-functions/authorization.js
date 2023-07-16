@@ -18,7 +18,7 @@ export const authorize = async (id, emails) => {
     },
     body: JSON.stringify({
       name: id,
-      authorizedEmails: emails,
+      emails: emails,
     }),
   });
 };

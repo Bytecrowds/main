@@ -40,7 +40,7 @@ export default async (req, res) => {
         If the request doesn't contain a new value for a field, use the current one.
         If the user deleted the code, the text field would be empty, so we need to check for that.
       */
-      for (let field in data)
+      for (const field in data)
         if (!data[field] && data[field] !== "")
           data[field] = storedBytecrowd[field];
 

@@ -22,9 +22,20 @@ const AuthorizationModal = ({ isOpen, onClose, id }) => {
   const submit = async () => {
     const emails = inputRef.current.value.replaceAll(" ", "").split(",");
 
+    // Regex from https://www.scaler.com/topics/email-validation-in-javascript/
+    for (const email of emails)
+      if (!email.match(/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/)) {
+        alert(`invalid email: ${email}`);
+        return;
+      }
+
     let response = await authorize(id, emails);
 
-    if (response.status !== 200) alert(await response.text());
+    if (response.status !== 200) {
+      alert(await response.text());
+      return;
+    }
+
     // Close the modal.
     onClose();
   };
