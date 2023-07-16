@@ -27,8 +27,10 @@ export default async (req, res) => {
     key: process.env.ABLY_API_KEY,
   });
 
-  let authorizationOptions = {};
-  authorizationOptions[channel] = ["subscribe", "publish", "presence"];
+  let authorizationOptions = {
+    // https://stackoverflow.com/questions/5640988/how-do-i-interpolate-a-variable-as-a-key-in-a-javascript-object/30608422#30608422
+    [channel]: ["subscribe", "publish", "presence"],
+  };
 
   ablyClient.auth.createTokenRequest(
     {
