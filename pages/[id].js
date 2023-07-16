@@ -9,8 +9,7 @@ const Editor = dynamic(() => import("../components/editor"), {
   ssr: false,
 });
 
-export async function getServerSideProps(context) {
-  const { req, res, query } = context;
+export async function getServerSideProps({ req, res, query }) {
   const session = await unstable_getServerSession(req, res, authOptions);
   const { id } = query;
 
