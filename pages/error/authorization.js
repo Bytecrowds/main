@@ -1,4 +1,4 @@
-import { unstable_getServerSession } from "next-auth";
+import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]";
 import { useSession } from "next-auth/react";
 import { signIn, signOut } from "next-auth/react";
@@ -16,7 +16,7 @@ import StyledText from "../../components/styled/text";
 export async function getServerSideProps({ req, res, query }) {
   return {
     props: {
-      session: await unstable_getServerSession(req, res, authOptions),
+      session: await getServerSession(req, res, authOptions),
       page: query.page,
     },
   };

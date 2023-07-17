@@ -2,7 +2,7 @@
 
 import redis from "../../database/redis";
 
-import { unstable_getServerSession } from "next-auth";
+import { getServerSession } from "next-auth";
 import { authOptions } from "./auth/[...nextauth]";
 
 import {
@@ -12,7 +12,7 @@ import {
 import success from "../../utils/server/approve";
 
 export default async (req, res) => {
-  const session = await unstable_getServerSession(req, res, authOptions);
+  const session = await getServerSession(req, res, authOptions);
 
   const { name } = req.body;
   let data = {

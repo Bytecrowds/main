@@ -1,4 +1,4 @@
-import { unstable_getServerSession } from "next-auth";
+import { getServerSession } from "next-auth";
 import { isAuthorized } from "../utils/server/authorization";
 import { authOptions } from "./api/auth/[...nextauth]";
 
@@ -11,7 +11,7 @@ const Editor = dynamic(() => import("../components/editor"), {
 });
 
 export async function getServerSideProps({ req, res, query }) {
-  const session = await unstable_getServerSession(req, res, authOptions);
+  const session = await getServerSession(req, res, authOptions);
   const { id } = query;
 
   const bytecrowd = await redis.hgetall(`bytecrowd:${id}`);

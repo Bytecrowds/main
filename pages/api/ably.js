@@ -1,7 +1,7 @@
 /* eslint-disable import/no-anonymous-default-export */
 
 import redis from "../../database/redis";
-import { unstable_getServerSession } from "next-auth";
+import { getServerSession } from "next-auth";
 import { authOptions } from "./auth/[...nextauth]";
 
 import {
@@ -13,7 +13,7 @@ import success from "../../utils/server/approve";
 const Ably = require("ably");
 
 export default async (req, res) => {
-  const session = await unstable_getServerSession(req, res, authOptions);
+  const session = await getServerSession(req, res, authOptions);
 
   const { channel } = req.body;
 
