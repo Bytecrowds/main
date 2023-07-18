@@ -1,19 +1,15 @@
 /* eslint-disable import/no-anonymous-default-export */
 
 import redis from "../../database/redis";
-import { unstable_getServerSession } from "next-auth";
+import { getServerSession } from "next-auth";
 import { authOptions } from "./auth/[...nextauth]";
 
-import {
-  isAuthorized,
-  failAuthorization,
-} from "../../utils/server/authorization";
-import success from "../../utils/server/approve";
+import { isAuthorized } from "../../utils/server/authorization";
 
 const Ably = require("ably");
 
 export default async (req, res) => {
-  const session = await unstable_getServerSession(req, res, authOptions);
+  const session = await getServerSession(req, res, authOptions);
 
   const { channel } = req.body;
 
@@ -23,7 +19,9 @@ export default async (req, res) => {
   );
 
   if (!isAuthorized(authorizedEmails, session))
-    return failAuthorization("authorization", res);
+    return res
+      .status(401)
+      .send("you need to be authorized to execute this operation");
 
   const ablyClient = new Ably.Rest({
     key: process.env.ABLY_API_KEY,
@@ -44,7 +42,7 @@ export default async (req, res) => {
     },
     null,
     (err, tokenRequest) => {
-      return success(res, tokenRequest);
+      return res.status(200).send(tokenRequest);
     }
   );
 };
