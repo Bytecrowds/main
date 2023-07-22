@@ -1,6 +1,5 @@
-import { unstable_getServerSession } from "next-auth";
+import { getServerSession } from "next-auth";
 import { authOptions } from "../api/auth/[...nextauth]";
-import { useSession } from "next-auth/react";
 import { signIn, signOut } from "next-auth/react";
 
 import {
@@ -16,15 +15,13 @@ import StyledText from "../../components/styled/text";
 export async function getServerSideProps({ req, res, query }) {
   return {
     props: {
-      session: await unstable_getServerSession(req, res, authOptions),
+      loggedIn: !!(await getServerSession(req, res, authOptions)),
       page: query.page,
     },
   };
 }
 
-const Error = ({ page }) => {
-  const { data: session } = useSession();
-
+const Error = ({ loggedIn, page }) => {
   return (
     <div
       style={{
@@ -56,7 +53,7 @@ const Error = ({ page }) => {
           Please login with an authorized account to access this bytecrowd
         </CardBody>
         <CardFooter justifyContent="center">
-          {!!session ? (
+          {loggedIn ? (
             <Button variant="ghost" onClick={() => signOut()} fontSize="xl">
               <StyledText>sign out</StyledText>
             </Button>

@@ -2,14 +2,11 @@
 
 import redis from "../../database/redis";
 
-import { failAuthorization } from "../../utils/server/authorization";
-import success from "../../utils/server/approve";
-
 export default async (req, res) => {
   const { name } = req.body;
 
   if (await redis.hexists(`bytecrowd:${name}`, "authorizedEmails"))
-    return failAuthorization("cannot update existing authorization", res);
+    return res.status(401).send("cannot update existing authorization");
 
   const emails = req.body?.emails;
   if (!emails || (emails.length === 1 && emails[0] === ""))
@@ -25,5 +22,5 @@ export default async (req, res) => {
   await redis.hset(`bytecrowd:${name}`, {
     authorizedEmails: emails,
   });
-  return success(res);
+  return res.status(200).send("success");
 };

@@ -2,17 +2,13 @@
 
 import redis from "../../database/redis";
 
-import { unstable_getServerSession } from "next-auth";
+import { getServerSession } from "next-auth";
 import { authOptions } from "./auth/[...nextauth]";
 
-import {
-  isAuthorized,
-  failAuthorization,
-} from "../../utils/server/authorization";
-import success from "../../utils/server/approve";
+import { isAuthorized } from "../../utils/server/authorization";
 
 export default async (req, res) => {
-  const session = await unstable_getServerSession(req, res, authOptions);
+  const session = await getServerSession(req, res, authOptions);
 
   const { name } = req.body;
   let data = {
@@ -27,11 +23,13 @@ export default async (req, res) => {
       text: data.text,
       language: "javascript",
     });
-    return success(res);
+    return res.status(200).send("success");
   }
 
   if (!isAuthorized(storedBytecrowd.authorizedEmails, session))
-    return failAuthorization("authorization", res);
+    return res
+      .status(401)
+      .send("you need to be authorized to execute this operation");
 
   // If at least one element changed, update the bytecrowd.
   for (const property in data)
@@ -50,5 +48,5 @@ export default async (req, res) => {
       await redis.hset(`bytecrowd:${name}`, data);
       break;
     }
-  return success(res);
+  return res.status(200).send("success");
 };
