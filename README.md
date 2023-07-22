@@ -16,6 +16,3 @@
 - ABLY_API_KEY => string
 
 - NEXT_PUBLIC_UPDATE_INTERVAL => int (milliseconds)
-
-- AUTHORIZATION_FAILED_MESSAGE => string (needs to include "\<reason>")
-  (ex: you need to perform "\<reason>" to execute this operation)
