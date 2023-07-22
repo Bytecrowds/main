@@ -43,13 +43,7 @@ const AuthorizationModal = ({ isOpen, onClose, id }) => {
   };
 
   return (
-    <Modal
-      isOpen={isOpen}
-      onClose={onClose}
-      closeOnEsc={false}
-      closeOnOverlayClick={false}
-      isCentered
-    >
+    <Modal isOpen={isOpen} onClose={onClose} isCentered>
       <ModalOverlay backdropFilter="auto" backdropBlur="5px" />
       <ModalContent>
         <ModalHeader>
