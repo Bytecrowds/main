@@ -38,9 +38,9 @@ export async function getServerSideProps({ req, res, query }) {
       props: {
         editorInitialText: "",
         editorInitialLanguage: "javascript",
-        insertInitialTextFromDatabase: insertInitialTextFromDatabase,
+        insertInitialTextFromDatabase,
         login: "successful",
-        id: id,
+        id,
       },
     };
 
@@ -57,8 +57,8 @@ export async function getServerSideProps({ req, res, query }) {
     props: {
       editorInitialText: bytecrowd.text,
       editorInitialLanguage: bytecrowd.language,
-      insertInitialTextFromDatabase: insertInitialTextFromDatabase,
-      id: id,
+      insertInitialTextFromDatabase,
+      id,
     },
   };
 }
