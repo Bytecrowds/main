@@ -31,7 +31,8 @@ const Editor = ({
   const { isOpen, onOpen, onClose } = useDisclosure();
 
   useEffect(() => {
-    if (insertInitialTextFromDatabase) editorText.insert(0, editorInitialText);
+    if (insertInitialTextFromDatabase)
+      editorText.insert(0, editorInitialText.toString());
     // Setup the Ably provider at first render to prevent spawning connections.
     setupAbly(id);
 
