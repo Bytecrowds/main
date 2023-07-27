@@ -1,3 +1,5 @@
+import Head from "next/head";
+
 import { getServerSession } from "next-auth";
 import { isAuthorized } from "../utils/server/authorization";
 import { authOptions } from "./api/auth/[...nextauth]";
@@ -70,12 +72,18 @@ const Bytecrowd = ({
   id,
 }) => {
   return (
-    <Editor
-      id={id}
-      editorInitialText={editorInitialText}
-      editorInitialLanguage={editorInitialLanguage}
-      insertInitialTextFromDatabase={insertInitialTextFromDatabase}
-    />
+    <>
+      <Head>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="application-name" content="Bytecrowds" />
+      </Head>
+      <Editor
+        id={id}
+        editorInitialText={editorInitialText}
+        editorInitialLanguage={editorInitialLanguage}
+        insertInitialTextFromDatabase={insertInitialTextFromDatabase}
+      />
+    </>
   );
 };
 

@@ -1,9 +1,18 @@
+import Head from "next/head";
+
 import { Text } from "@chakra-ui/react";
 import { Link } from "@chakra-ui/react";
 
 const Contact = () => {
   return (
     <>
+      <Head>
+        <title>Contact</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta charSet="UTF-8" />
+        <meta name="author" content="Tudor Zgîmbău" />
+        <meta name="application-name" content="Bytecrowds" />
+      </Head>
       <Text
         marginTop={{
           sm: "260px",

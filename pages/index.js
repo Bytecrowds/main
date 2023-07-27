@@ -24,11 +24,23 @@ const Home = () => {
   return (
     <>
       <Head>
-        <title>Bytecrowds - Landing</title>
+        <title>
+          Bytecrowds - a free, easy-to-use serverless code-sharing platform
+        </title>
+
         <meta
-          name="viewport"
-          content="width=device-width, initial-scale=1"
-        ></meta>
+          name="description"
+          content="Bytecrowds is a free code-sharing platform with minimalist design and its own analytics engine.
+          Quick sharing, reliable infrastructure and built-in authorization!"
+        />
+        <meta charSet="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta name="author" content="Tudor Zgîmbău" />
+        <meta name="application-name" content="Bytecrowds" />
+        <meta
+          name="keywords"
+          content="code-sharing, serverless, minimalist, authorization, sharing"
+        />
       </Head>
       <Flex>
         <NextLink href="/about" legacyBehavior passHref>
