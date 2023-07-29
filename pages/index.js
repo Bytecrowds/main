@@ -43,21 +43,21 @@ const Home = () => {
         />
       </Head>
       <Flex>
-        <NextLink href="/about" legacyBehavior passHref>
-          <Button>
-            <Text fontSize="20px">
-              <Link background="brand">about us</Link>
-            </Text>
-          </Button>
-        </NextLink>
+        <Button>
+          <Text fontSize="20px">
+            <Link as={NextLink} href="/about" background="brand">
+              about us
+            </Link>
+          </Text>
+        </Button>
         <Spacer />
-        <NextLink href="/contact" legacyBehavior passHref>
-          <Button>
-            <Text fontSize="20px">
-              <Link background="brand">contact</Link>
-            </Text>
-          </Button>
-        </NextLink>
+        <Button>
+          <Text fontSize="20px">
+            <Link as={NextLink} href="/contact" background="brand">
+              contact
+            </Link>
+          </Text>
+        </Button>
       </Flex>
       <Flex
         flexDirection="column"
