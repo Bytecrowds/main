@@ -24,8 +24,10 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
   // Controls the analytics info modal.
   const { isOpen, onOpen, onClose } = useDisclosure();
 
+  const environment = process.env.NEXT_PUBLIC_ENVIRONMENT;
+
   useEffect(() => {
-    LogRocket.init("ptmrhf/bytecrowds");
+    if (environment === "production") LogRocket.init("ptmrhf/bytecrowds");
 
     // Analytics info.
     if (localStorage.getItem("modalShown") !== "true") onOpen();
@@ -33,7 +35,6 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
     // Send the IP adress and current page to the analytics server.
     async function fetchAnalytics() {
       let page;
-      let environment = process.env.NEXT_PUBLIC_ENVIRONMENT;
       if (environment === "development")
         // http://localhost:xxxx/abc => abc .
         page = document.URL.substring(22);
