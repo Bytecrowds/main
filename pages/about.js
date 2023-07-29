@@ -1,3 +1,5 @@
+import Head from "next/head";
+
 import { Text } from "@chakra-ui/react";
 import NextLink from "next/link";
 import { Link } from "@chakra-ui/react";
@@ -7,11 +9,19 @@ import StyledText from "../components/styled/text";
 const About = () => {
   return (
     <>
+      <Head>
+        <title>About</title>
+
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <meta charSet="UTF-8" />
+        <meta name="author" content="Tudor Zgîmbău" />
+        <meta name="application-name" content="Bytecrowds" />
+      </Head>
       <StyledText styling={{ marginTop: "30px", fontSize: "3.75rem" }}>
         What is Bytecrowds?
       </StyledText>
       <Text fontSize="30px">
-        Bytecrowds is an easy to use serverless code sharing platform with
+        Bytecrowds is a free, easy-to-use serverless code-sharing platform with
         minimalist design.
       </Text>
       <StyledText styling={{ marginTop: "120px", fontSize: "3.75rem" }}>
