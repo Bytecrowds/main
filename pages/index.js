@@ -25,13 +25,14 @@ const Home = () => {
     <>
       <Head>
         <title>
-          Bytecrowds - a free, easy-to-use serverless code-sharing platform
+          Bytecrowds - free, open-source, real-time platform for sharing code
+          snippets
         </title>
 
         <meta
           name="description"
-          content="Bytecrowds is a free code-sharing platform with minimalist design and its own analytics engine.
-          Quick sharing, reliable infrastructure and built-in authorization!"
+          content="Bytecrowds is a free, open-source, real-time platform that allows you to share and enforce authorization for code snippets.
+          Adopting the serverless architecture and its own, privacy-respecting analytics engine, it offers a reliable and secure way to quickly obtain sharable links of your code."
         />
         <meta charSet="UTF-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -39,7 +40,7 @@ const Home = () => {
         <meta name="application-name" content="Bytecrowds" />
         <meta
           name="keywords"
-          content="code-sharing, serverless, minimalist, authorization, sharing"
+          content="real-time, code-sharing, serverless, minimalist, analytics, code, snippets"
         />
       </Head>
       <Flex>

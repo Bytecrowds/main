@@ -21,8 +21,11 @@ const About = () => {
         What is Bytecrowds?
       </StyledText>
       <Text fontSize="30px">
-        Bytecrowds is a free, easy-to-use serverless code-sharing platform with
-        minimalist design.
+        Bytecrowds is a free, open-source, real-time platform that allows you to
+        share and enforce authorization for code snippets. Adopting the
+        serverless architecture and its own, privacy-respecting analytics
+        engine, it offers a reliable and secure way to quickly obtain sharable
+        links of your code.
       </Text>
       <StyledText styling={{ marginTop: "120px", fontSize: "3.75rem" }}>
         Who&apos;s in charge of the project?
