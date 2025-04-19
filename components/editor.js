@@ -1,73 +1,133 @@
-import { useEffect, useState } from "react";
+"use client";
+
+import { useEffect, useState, useRef } from "react";
 import { useSyncedStore } from "@syncedstore/react";
-import CodeMirror from "@uiw/react-codemirror";
-import { oneDark } from "@codemirror/theme-one-dark";
-
-import { yCollab, yUndoManagerKeymap } from "y-codemirror.next";
-import { keymap } from "@codemirror/view";
-
-import store from "../realtime/store";
-import { setupAbly } from "../realtime/store";
-
+import store, { setupAbly } from "../realtime/store";
 import { updateBytecrowd } from "../server-functions/database";
-import { langs, langOptions } from "../utils/client/language";
-
-import { useDisclosure } from "@chakra-ui/react";
 import AuthorizationModal from "./authorization";
+import { useDisclosure } from "@chakra-ui/react";
+import { languageLoaders, langOptions } from "../utils/client/language";
 
-const Editor = ({
+export default function Editor({
   id,
   editorInitialText,
   editorInitialLanguage,
   insertInitialTextFromDatabase,
-}) => {
-  const [editorLanguage, setEditorLanguage] = useState(
-    langs[editorInitialLanguage]
-  );
-  const [prevText, setPrevText] = useState(editorInitialText);
+}) {
   const editorText = useSyncedStore(store).bytecrowdText;
-
-  // Control the authorization modal
   const { isOpen, onOpen, onClose } = useDisclosure();
 
-  useEffect(() => {
-    if (insertInitialTextFromDatabase)
-      editorText.insert(0, editorInitialText.toString());
-    // Setup the Ably provider at first render to prevent spawning connections.
-    setupAbly(id);
+  // Holds the CodeMirror modules once loaded
+  const [codeMirrorModules, setcodeMirrorModules] = useState(null);
+  // Holds the language extension once loaded
+  const [langExt, setLangExt] = useState(null);
+  // Current language key (e.g. "javascript", "cpp", etc.)
+  const [currentLanguage, setCurrentLanguage] = useState(editorInitialLanguage);
 
-    // Every x seconds, store the current text in a variable.
-    const interval = setInterval(() => {
-      setPrevText(editorText.toString());
-    }, parseInt(process.env.NEXT_PUBLIC_UPDATE_INTERVAL));
-    // Clear the interval to prevent memory leaks and duplication.
-    return () => clearInterval(interval);
-    // Only run this once.
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  // Ref to track last‐saved text to avoid redundant updates
+  const lastSavedRef = useRef(editorInitialText);
+
+  // 1️⃣ Load CodeMirror core, theme, collab & keymap — only once
+  useEffect(() => {
+    let cancelled = false;
+    async function loadcodeMirrorModules() {
+      const [
+        { default: CodeMirror },
+        { oneDark },
+        { yCollab, yUndoManagerKeymap },
+        { keymap },
+      ] = await Promise.all([
+        import("@uiw/react-codemirror"),
+        import("@codemirror/theme-one-dark"),
+        import("y-codemirror.next"),
+        import("@codemirror/view"),
+      ]);
+
+      if (!cancelled) {
+        setcodeMirrorModules({ CodeMirror, oneDark, yCollab, yUndoManagerKeymap, keymap });
+      }
+    }
+    loadcodeMirrorModules();
+    return () => {
+      cancelled = true;
+    };
   }, []);
 
+  // 2️⃣ Load the language extension whenever `codeMirrorModules` is ready or the user switches
   useEffect(() => {
-    // If the text changed, update the DB.
-    updateBytecrowd({ name: id, text: editorText.toString() });
-    /*
-      The update-after-delay logic relies on following the text snapshot,
-      no the actual editorText. id is a prop.
-    */
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [prevText]);
+    if (!codeMirrorModules) return;
+    let cancelled = false;
+    async function loadLanguageExt() {
+      const loader = languageLoaders[currentLanguage];
+      const ext = loader ? await loader() : null;
+      if (!cancelled) setLangExt(ext);
+    }
+    loadLanguageExt();
+    return () => {
+      cancelled = true;
+    };
+  }, [codeMirrorModules, currentLanguage]);
+
+  // 3️⃣ Once both codeMirrorModules & the language are ready, do initial text insertion,
+  //    Ably setup, and start a save‐interval that only fires when the text
+  //    has actually changed since the last save.
+  useEffect(() => {
+    if (!codeMirrorModules || !langExt) return;
+
+    // Insert the DB text on first load
+    if (insertInitialTextFromDatabase && editorText.length === 0) {
+      editorText.insert(0, editorInitialText);
+      lastSavedRef.current = editorInitialText;
+    }
+
+    // Initialize real‐time replication
+    setupAbly(id);
+
+    // Every N ms, sync to your database—but ONLY if it’s different
+    const intervalMilliseconds = parseInt(process.env.NEXT_PUBLIC_UPDATE_INTERVAL);
+    const interval = setInterval(() => {
+      const latest = editorText.toString();
+      if (latest !== lastSavedRef.current) {
+        updateBytecrowd({ name: id, text: latest });
+        lastSavedRef.current = latest;
+      }
+    }, intervalMilliseconds);
+
+    return () => clearInterval(interval);
+  }, [
+    codeMirrorModules,
+    langExt,
+    editorInitialText,
+    editorText,
+    id,
+    insertInitialTextFromDatabase,
+  ]);
+
+  // Still loading?
+  if (!codeMirrorModules || !langExt) {
+    return <p style={{ color: "white" }}>Loading editor…</p>;
+  }
+
+  // Destructure for rendering
+  const { CodeMirror, oneDark, yCollab, yUndoManagerKeymap, keymap } = codeMirrorModules;
 
   return (
     <>
+      {/* Authorization modal */}
       <AuthorizationModal isOpen={isOpen} onClose={onClose} id={id} />
+
+      {/* The actual editor */}
       <CodeMirror
         value={editorText.toString()}
         theme={oneDark}
         extensions={[
           keymap.of([...yUndoManagerKeymap]),
-          editorLanguage,
+          langExt,
           yCollab(editorText),
         ]}
       />
+
+      {/* Bottom toolbar: language selector + set auth */}
       <div
         style={{
           position: "fixed",
@@ -75,8 +135,6 @@ const Editor = ({
           backgroundColor: "#18db87",
           width: "100%",
           height: "3%",
-          marginBottom: 0,
-          paddingBottom: 0,
         }}
       >
         <label htmlFor="languages" style={{ color: "black" }}>
@@ -84,17 +142,13 @@ const Editor = ({
         </label>
         <select
           name="languages"
-          defaultValue={editorInitialLanguage}
+          value={currentLanguage}
           onChange={(e) => {
-            setEditorLanguage(langs[e.target.value]);
-            updateBytecrowd({
-              name: id,
-              language: e.target.value.toString(),
-            });
+            const lang = e.target.value;
+            setCurrentLanguage(lang);
+            updateBytecrowd({ name: id, language: lang });
           }}
-          style={{
-            color: "white",
-          }}
+          style={{ color: "white" }}
         >
           {langOptions.map((lang) => (
             <option key={lang} value={lang}>
@@ -102,6 +156,7 @@ const Editor = ({
             </option>
           ))}
         </select>
+
         <button
           style={{
             marginLeft: "15px",
@@ -115,6 +170,4 @@ const Editor = ({
       </div>
     </>
   );
-};
-
-export default Editor;
+}

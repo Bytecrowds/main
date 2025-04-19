@@ -33,20 +33,20 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }) {
     if (localStorage.getItem("modalShown") !== "true") onOpen();
 
     // Send the IP adress and current page to the analytics server.
-    async function fetchAnalytics() {
-      let page;
-      if (environment === "development")
-        // http://localhost:xxxx/abc => abc .
-        page = document.URL.substring(22);
-      else if (environment === "production")
-        // https://www.bytecrowds.com/abc => abc .
-        page = document.URL.substring(27);
-      if (page === "") page = "index";
-      await fetch(
-        `${process.env.NEXT_PUBLIC_ANALYTICS_URL}/analytics?page=${page}`
-      );
-    }
-    fetchAnalytics();
+    // async function fetchAnalytics() {
+    //   let page;
+    //   if (environment === "development")
+    //     // http://localhost:xxxx/abc => abc .
+    //     page = document.URL.substring(22);
+    //   else if (environment === "production")
+    //     // https://www.bytecrowds.com/abc => abc .
+    //     page = document.URL.substring(27);
+    //   if (page === "") page = "index";
+    //   await fetch(
+    //     `${process.env.NEXT_PUBLIC_ANALYTICS_URL}/analytics?page=${page}`
+    //   );
+    // }
+    // fetchAnalytics();
 
     // Triggered by "onOpen".
     // eslint-disable-next-line react-hooks/exhaustive-deps

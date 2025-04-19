@@ -2,14 +2,14 @@ import Head from "next/head";
 
 import { getServerSession } from "next-auth";
 import { isAuthorized } from "../utils/server/authorization";
-import { authOptions } from "./api/auth/[...nextauth]";
-
+import { authOptions } from "../lib/auth";
 import redis from "../database/redis";
 
 import dynamic from "next/dynamic";
 // Import the Editor client-side only to avoid initializing providers multiple times.
 const Editor = dynamic(() => import("../components/editor"), {
   ssr: false,
+  loading: () => <p>Loading editor…</p>,
 });
 
 export async function getServerSideProps({ req, res, query }) {

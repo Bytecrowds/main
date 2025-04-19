@@ -1,33 +1,3 @@
-import { javascript } from "@codemirror/lang-javascript";
-import { cpp } from "@codemirror/lang-cpp";
-import { html } from "@codemirror/lang-html";
-import { css } from "@codemirror/lang-css";
-import { json } from "@codemirror/lang-json";
-import { markdown } from "@codemirror/lang-markdown";
-import { rust } from "@codemirror/lang-rust";
-import { xml } from "@codemirror/lang-xml";
-import { java } from "@codemirror/lang-java";
-import { wast } from "@codemirror/lang-wast";
-import { php } from "@codemirror/lang-php";
-import { lezer } from "@codemirror/lang-lezer";
-import { python } from "@codemirror/lang-python";
-
-export const langs = {
-  javascript: javascript(),
-  cpp: cpp(),
-  html: html(),
-  css: css(),
-  json: json(),
-  markdown: markdown(),
-  rust: rust(),
-  xml: xml(),
-  java: java(),
-  wast: wast(),
-  php: php(),
-  lezer: lezer(),
-  python: python(),
-};
-
 export const langOptions = [
   "javascript",
   "cpp",
@@ -42,3 +12,20 @@ export const langOptions = [
   "lezer",
   "python",
 ];
+
+export const languageLoaders = {
+  javascript: () =>
+    import("@codemirror/lang-javascript").then((mod) => mod.javascript()),
+  cpp: () => import("@codemirror/lang-cpp").then((mod) => mod.cpp()),
+  html: () => import("@codemirror/lang-html").then((mod) => mod.html()),
+  css: () => import("@codemirror/lang-css").then((mod) => mod.css()),
+  json: () => import("@codemirror/lang-json").then((mod) => mod.json()),
+  markdown: () =>
+    import("@codemirror/lang-markdown").then((mod) => mod.markdown()),
+  rust: () => import("@codemirror/lang-rust").then((mod) => mod.rust()),
+  xml: () => import("@codemirror/lang-xml").then((mod) => mod.xml()),
+  java: () => import("@codemirror/lang-java").then((mod) => mod.java()),
+  php: () => import("@codemirror/lang-php").then((mod) => mod.php()),
+  lezer: () => import("@codemirror/lang-lezer").then((mod) => mod.lezer()),
+  python: () => import("@codemirror/lang-python").then((mod) => mod.python()),
+};

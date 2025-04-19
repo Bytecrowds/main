@@ -1,8 +1,8 @@
 import { Redis } from "@upstash/redis";
 
-import https from "http";
+import { Agent } from "https";
 
 // Reuse the connection if the backend function is still hot.
-const redis = Redis.fromEnv({ agent: new https.Agent({ keepAlive: true }) });
+const redis = Redis.fromEnv({ agent: new Agent({ keepAlive: true }) });
 
 export default redis;

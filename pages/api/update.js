@@ -3,7 +3,7 @@
 import redis from "../../database/redis";
 
 import { getServerSession } from "next-auth";
-import { authOptions } from "./auth/[...nextauth]";
+import { authOptions } from "../../lib/auth";
 
 import { isAuthorized } from "../../utils/server/authorization";
 
